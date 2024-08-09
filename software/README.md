@@ -6,7 +6,7 @@ chmod +x setup_wenzel_station.sh
 > [!IMPORTANT]
 > You will need to edit your _.sh_ file. Ubuntu python paths were giving us problems. So we decided to contain everything in a mamba environment and add the path of the python3 executable when needed. If you have a cleaner way to do this let us know!
 
-Firstly, make sure you have a mamba installation in your device.
+Firstly, make sure you have a git and mamba installation in your device. In the case of mamba:
 ```
 mamba info
 mamba create --name squid-station
