@@ -2,7 +2,8 @@
 
 # install packages
 mamba install anaconda::pip
-sudo apt install python3-pyqtgraph python3-pyqt5 -y
+pip3 install pyqtgraph
+pip3 install pyqt5
 sudo apt install python3-pyqt5.qtsvg
 
 # clone the repo
