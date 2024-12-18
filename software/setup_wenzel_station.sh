@@ -7,9 +7,10 @@ pip3 install pyqt5
 sudo apt install python3-pyqt5.qtsvg
 
 # clone the repo
+mkdir ~/Documents/wenzel_repositories
 cd ~/Documents/wenzel_repositories
-git clone https://github.com/hongquanli/octopi-research.git
-cd octopi-research/software
+git clone https://github.com/wenzel-lab/SQUID-bioimaging-platform.git
+cd SQUID-bioimaging-platform/software
 mkdir cache
 
 # install libraries 
