@@ -26,7 +26,7 @@ Reboot the computer to finish the installation.
 ## Configuring the software
 Copy the .ini file associated with the microscope configuration to the software folder.
 ```
-cp ~/path_of_repo_installation/SQUID-bioimaging-platform/software/configuration_squid_6060.ini ~/path_of_repo_installation/SQUID-bioimaging-platform/software/
+cp ~/path_of_repo_installation/software/configuration_squid_6060.ini ~/path_of_repo_installation/SQUID-bioimaging-platform/software/
 ```
 > [!TIP]
 > Make modifications as needed (e.g. `camera_type`, `support_laser_autofocus`,`focus_camera_exposure_time_ms`). 
