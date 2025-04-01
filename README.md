@@ -45,4 +45,31 @@ Inspired by the [Benchtop mesoSPIM light sheet microscope](https://github.com/me
 |#4 - Orange| 600/37 BrightLine HC     | Filter organge | [AHF](https://ahf.de/produkte/spektralanalytik-photonik/optische-filter/einzelfilter/bandpass-filter/600-699-nm/600-37-brightline-hc/F39-637)    |
 |#5 - Red| 635 LP Langpass-Filter     | Filter red , e.g. PI stain | [AHF](https://ahf.de/produkte/spektralanalytik-photonik/optische-filter/einzelfilter/langpass-filter/600-699-nm/635-lp-edge-basic-langpass-filter/F76-635)    |
 
+Bill of materials for the Raman add-on:
+
+Laser-engine:
+* 785nm fiber laser ([Thorlabs, LP785-SAV50](https://www.thorlabs.com/newgrouppage9.cfm?objectgroup_id=7783&pn=LP785-SAV50#7784))
+* ESD Protection and Strain Relief Cable ([Thorlabs, SR9A](https://www.thorlabs.com/newgrouppage9.cfm?objectgroup_id=2710&pn=SR9A))
+* 4x M2 hex-head screws (6-9.5mm long)
+* Custom two-piece aluminium laser "clamshell" for thorlabs pig-tailed laser-diodes, similar to [this Thorlabs mount LDM9LP](https://www.thorlabs.com/newgrouppage9.cfm?objectgroup_id=4839)
+* Custom aluminium mounting plate with screw holes
+* 4x M2.5 (5.5-8mm) countersink screws to attach the laser "clamshell" to to the laser mouting plate
+* 4x M2.5 (5.5mm) hex-head screws to attach the laser mouting plate to the cooler cross bars
+* Teensy 4.1 microcontroller with pins soldered
+* CPU cooler fan (DYNATRON-corp.com, U10)
+* Custom main single channel laser-engine board (here V1.1)) with Teensy-mount at front, cooled TCM1040/1041 mount, and tec-driver break-out at back (Yexian, 1041 V0.4.1)
+* Laser-driver board [FL591FL Evaluation PCB & FL500 Laser Diode Driver](https://www.teamwavelength.com/product/fl591fl-evaluation-pcb-fl500-laser-diode-driver/?srsltid=AfmBOoozVTAnHhwxmi-iK4C9aj5j4m46LKKndWX-x-GoR4wqOxvL3puJ)
+
+Questions:
+* What peltier element? (size, voltage, position, connector?)
+* laser "clamshell" screw holes don't fit onto the laser mounting plate - where to mount?
+* Software for laser engine
+* Connectors for laser engine
+* Where to connect 12V PSU to laser engine
+* Where to mount laser driver on laser engine?
+* How/where to mount "DC 12v 3a 4pin PMW PC CPU fan temperature controll thermostat speed controller" (ZHIYU, ZF1X4L) and how many of the three units do I use?
+  
+needed:
+* 2x imperial 2-56 screws (ca. 5mm) to fix the laser head to the laser "clamshell"
+
 Follow us! [#twitter](https://twitter.com/WenzelLab), [#YouTube](https://www.youtube.com/@librehub), [#LinkedIn](https://www.linkedin.com/company/92802424), [#instagram](https://www.instagram.com/wenzellab/), [#Printables](https://www.printables.com/@WenzelLab), [#LIBREhub website](https://librehub.github.io), [#IIBM website](https://ingenieriabiologicaymedica.uc.cl/en/people/faculty/821-tobias-wenzel)
