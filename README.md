@@ -36,6 +36,8 @@ Is based on the SQUID/OCTOPI 60x60mm inverted stage.
 | ZT775sp-2p-UF3     | Beamsplitter brightfield to add on 785nm Raman   | [Chroma](https://www.chroma.com/products/parts/zt775sp-2p-multiphoton-shortpass-laser-dichroic)    |
 | F46-950 (RT785rdc + RET785/6x + RET792LP)    | 785 nm Raman Filterset with Beamsplitter, Bandpass and Emitter      | [AHF](https://ahf.de/en/products/spectral-analysis-photonic/optical-filters/by-application/raman/raman-filter-sets/785-nm-raman-et-lp-filter-set/F46-950)    |
 
+<img src="images/epifluorescence_led_assembly.jpg" width=30%>
+
 Inspired by the [Benchtop mesoSPIM light sheet microscope](https://github.com/mesoSPIM/benchtop-hardware/tree/main), we have incorporated the [ZWO-asto mini electronic filter wheel (EFW)](https://www.zwoastro.com/product/efw/) with the following filter selections:
 | Position | Filter | Type | supplier |
 | :---   | :---   | :---  | :--- |
@@ -65,7 +67,7 @@ Inspired by the [Benchtop mesoSPIM light sheet microscope](https://github.com/me
 
 ### Configuration of the laser driver FL591FL:
 
-<img src="images/laser-driver-config1.png" width=50%><img src="images/laser-driver-config2.png" width=50%>
+<img src="images/laser-driver-config1.png" width=30%><img src="images/laser-driver-config2.png" width=30%>
 
 * We only use a single output channel (LD1 output), so only that cable and the power input cable are required, and the jumper between the (unused) BNC input ports should be set to *ONE*
 * Given that the laser diode (Type E) has an unused pin, only the current controlled *CC* mode (not power-controlled) of the driver board can be used, the LD1 mode switch should be set to the left accordingly
@@ -74,6 +76,9 @@ Inspired by the [Benchtop mesoSPIM light sheet microscope](https://github.com/me
 * It is not neccessary to assemble a test diode, since the driver power does not exceed the laser diode power, and simple multimeter measurement is enough to configure the potentiometers (current limit trimpots)
 
 ### Spectrometer:
+
+<img src="images/spectrometer_arrangement.png" width=30%>
+
 * NIR-sensitive Camera (IDS, U3-38C0XCP-M-NO) (serial nr. 4108725980)
 * camera moutable NIR lens
 * 4x M3 (6mm) hex-head screws to attach the camera
