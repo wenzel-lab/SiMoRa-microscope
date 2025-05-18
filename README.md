@@ -67,7 +67,7 @@ Inspired by the [Benchtop mesoSPIM light sheet microscope](https://github.com/me
 
 ### Configuration of the laser driver FL591FL:
 
-<img src="images/laser-driver-config1.png" width=30%><img src="images/laser-driver-config2.png" width=30%>
+<img src="images/laser-driver-config1.png" width=40%><img src="images/laser-driver-config2.png" width=30%>
 
 * We only use a single output channel (LD1 output), so only that cable and the power input cable are required, and the jumper between the (unused) BNC input ports should be set to *ONE*
 * Given that the laser diode (Type E) has an unused pin, only the current controlled *CC* mode (not power-controlled) of the driver board can be used, the LD1 mode switch should be set to the left accordingly
