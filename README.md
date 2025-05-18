@@ -7,7 +7,7 @@ Squid (Simplifying Quantitive Imaging Development and Deployment) provides a ful
 * [1] Hongquan Li, Deepak Krishnamurthy, Ethan Li, Pranav Vyas, Nibha Akireddy, Chew Chai, Manu Prakash, "**Squid: Simplifying Quantitative Imaging Platform Development and Deployment**." BiorXiv [ link | [website](https://squid-imaging.org)]
 * [2] Deepak Krishnamurthy, Hongquan Li, François Benoit du Rey, Pierre Cambournac, Adam G. Larson, Ethan Li, and Manu Prakash. "**Scale-free vertical tracking microscopy.**" Nature Methods 17, no. 10 (2020): 1040-1051. [ [link](https://www.nature.com/articles/s41592-020-0924-7) | [website](https://gravitymachine.org) ]
 
-## SQUID resources from the creators
+## SQUID resources from the creators (which only partially correspond to this newer version)
 - main software repo: [GitHub](https://github.com/hongquanli/octopi-research) (this repo)
 - tracking software repo: [GitHub](https://github.com/prakashlab/squid-tracking)
 - CAD models/photos of assembled squids: [Google Drive](https://drive.google.com/drive/folders/1JdVp34HtERGpBCBlFX6jFDwMUdeBLCEx?usp=sharing)
@@ -45,9 +45,9 @@ Inspired by the [Benchtop mesoSPIM light sheet microscope](https://github.com/me
 |#4 - Orange| 600/37 BrightLine HC     | Filter organge | [AHF](https://ahf.de/produkte/spektralanalytik-photonik/optische-filter/einzelfilter/bandpass-filter/600-699-nm/600-37-brightline-hc/F39-637)    |
 |#5 - Red| 635 LP Langpass-Filter     | Filter red , e.g. PI stain | [AHF](https://ahf.de/produkte/spektralanalytik-photonik/optische-filter/einzelfilter/langpass-filter/600-699-nm/635-lp-edge-basic-langpass-filter/F76-635)    |
 
-Bill of materials for the Raman add-on:
+## Information on the Raman add-on:
 
-Laser-engine with fan-cooling (but no TEC cooler):
+### Laser-engine with fan-cooling (but no TEC cooler):
 * Cusom anodised aluminium metal base and frame for the assembly (CEPHLA)
 * 785nm fiber laser ([Thorlabs, LP785-SAV50](https://www.thorlabs.com/newgrouppage9.cfm?objectgroup_id=7783&pn=LP785-SAV50#7784))
 * ESD Protection and Strain Relief Cable ([Thorlabs, SR9A](https://www.thorlabs.com/newgrouppage9.cfm?objectgroup_id=2710&pn=SR9A))
@@ -63,21 +63,24 @@ Laser-engine with fan-cooling (but no TEC cooler):
 * 12V Power supply for the fan controll
 * Custom mount for laser driver board and fan controller board
 
-Configuration of the laser driver FL591FL:
+### Configuration of the laser driver FL591FL:
+
+<img src="images/laser-driver-config1.png" width=50%><img src="images/laser-driver-config2.png" width=50%>
+
 * We only use a single output channel (LD1 output), so only that cable and the power input cable are required, and the jumper between the (unused) BNC input ports should be set to *ONE*
 * Given that the laser diode (Type E) has an unused pin, only the current controlled *CC* mode (not power-controlled) of the driver board can be used, the LD1 mode switch should be set to the left accordingly
 * The jumpers next to each BNC input should be set to Trimpot *ON* (left bottom) and BNC *OFF* (right up), to output reference signals only on the trimpot
 * The Output configuration jumper should be set to single *]S* (up) to enable the full output power range up to 500uA on the LD1 channel output
 * It is not neccessary to assemble a test diode, since the driver power does not exceed the laser diode power, and simple multimeter measurement is enough to configure the potentiometers (current limit trimpots)
 
-Spectrometer:
+### Spectrometer:
 * NIR-sensitive Camera (IDS, U3-38C0XCP-M-NO) (serial nr. 4108725980)
 * camera moutable NIR lens
 * 4x M3 (6mm) hex-head screws to attach the camera
 * Transmission grating ([LightSmyth, T-1500-875-2516-94](https://www.maxlevy.com/category/TransGrat.html))
 * Custom aluminium spectrometer casing in tro parts (base and enclosure) (CEPHLA)
 
-Cubes, filters and laser-coupling:
+### Cubes, filters and laser-coupling:
 * Laser-coupler (Thorlabs, PAF2A-18B)
 * Custom aluminium tripple-filter holder (CEPHLA) incl. z-stage motor with objective mount
 * 8x M2 (4mm) countersunk-head screws to close spectrometer lid
