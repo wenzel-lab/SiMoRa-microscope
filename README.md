@@ -1,5 +1,5 @@
 # SiMoRa - SQUID Microscope with Raman [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
-Our open hardware bioimaging platform for fluorescence microscopy and Raman spectroscopy based on the SQUID/OCTOPI 60x60mm inverted microscopy stage
+Our open hardware bioimaging platform for fluorescence microscopy and Raman spectroscopy based on the SQUID/OCTOPI 60x60mm inverted microscopy stage and a temperature and gas-controll enclosure.
 
 ## What is the SQUID Microscope?
 Squid (Simplifying Quantitive Imaging Development and Deployment) provides a full suite of hardware and software components for rapidly configuring high-performance microscopes tailored to users' applications with reduced cost, effort and turnaround time. Besides increasing accessibility of research microscopes and available microscope hours to labs, it is also designed to simplify development and dissemination of new or otherwise advanced microscopy techniques. Applications include slide scanner for digital pathology, time lapse imaging with 2D or 3D tiling, spatial omics that involves multicolor and multi-round imaging, tracking microscopy,computational microscopy, including label free microscopy using phase/polarization/reflectance + deep learning, and super resolution microscopy.
@@ -24,6 +24,8 @@ Is based on the SQUID/OCTOPI 60x60mm inverted stage.
 <p align="left">
 <img src="./images/SQUID-with-filter-wheel.jpeg" width="500">
 </p>
+
+The CO2 incubator enclosure "IncuTEC" is documented in a [seperate repository](https://github.com/wenzel-lab/IncuTEC).
 
 ## Optical filters used
 | Filter | Type | supplier |
