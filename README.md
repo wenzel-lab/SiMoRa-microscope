@@ -22,7 +22,7 @@ Squid (Simplifying Quantitive Imaging Development and Deployment) provides a ful
 
 Is based on the SQUID/OCTOPI 60x60mm inverted stage.
 <p align="left">
-<img src="./images/SQUID-with-filter-wheel.jpeg" width="500">
+<img src="./images/SiMoRa_1.jpeg" width="500">
 </p>
 
 The CO2 incubator enclosure "IncuTEC" is documented in a [seperate repository](https://github.com/wenzel-lab/IncuTEC).
@@ -40,6 +40,8 @@ The CO2 incubator enclosure "IncuTEC" is documented in a [seperate repository](h
 
 <img src="images/epifluorescence_led_assembly.jpg" width=30%>
 
+<img src="images/filterwheel.jpg" width=20%>
+
 Inspired by the [Benchtop mesoSPIM light sheet microscope](https://github.com/mesoSPIM/benchtop-hardware/tree/main), we have incorporated the [ZWO-asto mini electronic filter wheel (EFW)](https://www.zwoastro.com/product/efw/) with the following filter selections:
 | Position | Filter | Type | supplier |
 | :---   | :---   | :---  | :--- |
@@ -50,6 +52,10 @@ Inspired by the [Benchtop mesoSPIM light sheet microscope](https://github.com/me
 |#5 - Red| 635 LP Langpass-Filter     | Filter red , e.g. PI stain | [AHF](https://ahf.de/produkte/spektralanalytik-photonik/optische-filter/einzelfilter/langpass-filter/600-699-nm/635-lp-edge-basic-langpass-filter/F76-635)    |
 
 ## Information on the Raman add-on:
+
+<p align="left">
+<img src="./images/SiMoRa_schematic.jpeg" width="500">
+</p>
 
 ### Laser-engine with fan-cooling (but no TEC cooler):
 * Cusom anodised aluminium metal base and frame for the assembly (CEPHLA)
