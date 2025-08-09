@@ -40,7 +40,7 @@ The CO2 incubator enclosure "IncuTEC" is documented in a [seperate repository](h
 
 <img src="images/epifluorescence_led_assembly.jpg" width=30%>
 
-<img src="images/filterwheel.jpg" width=20%>
+<img src="images/filterwheel.jpeg" width=20%>
 
 Inspired by the [Benchtop mesoSPIM light sheet microscope](https://github.com/mesoSPIM/benchtop-hardware/tree/main), we have incorporated the [ZWO-asto mini electronic filter wheel (EFW)](https://www.zwoastro.com/product/efw/) with the following filter selections:
 | Position | Filter | Type | supplier |
@@ -54,7 +54,7 @@ Inspired by the [Benchtop mesoSPIM light sheet microscope](https://github.com/me
 ## Information on the Raman add-on:
 
 <p align="left">
-<img src="./images/SiMoRa_schematic.jpeg" width="500">
+<img src="./images/SiMoRa_schematic.jpg" width="500">
 </p>
 
 ### Laser-engine with fan-cooling (but no TEC cooler):
