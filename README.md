@@ -70,35 +70,38 @@ Image of the illumination arm before the addition of the custom lime-green LED
 
 | ID | Component | Type | supplier |
 | :--- | :---   | :---  | :--- |
-| (K) | ZT405/488/561/640rpcv2-UF3 | 4-band fluorescence beamsplitter       | [Chroma](https://www.chroma.com/products/parts/zt405-488-561-640rpcv2)    |
-| (L) | ZET405/488/561/640xv2 | 4-band illumination filter (20mm) | [Chroma](https://www.chroma.com/products/parts/zet405-488-561-640xv2) |
-| (M) | LA1608 | Plano-Convex Lens, Ø1", f = 75 mm | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=LA1608) |
-| (N) | M405L4 | Mounted 405nm LED | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=M405L4) |
-| (N) | M470L5 | Mounted 470nm LED  | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=M470L5) |
-| (N) | M625L4 | Mounted 625nm LED  | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=M625L4) |
-| (O) | FF458-Di02-25x36     | Beamsplitter 458 to couple in 405nm LED | [AHF](https://ahf.de/en/products/spectral-analysis-photonic/optical-filters/beamsplitters/epi-fluorescence-beamsplitters/standard-applications/longpass/beamsplitter-hc-458/F38-458)    |
-| (P) | FF520-Di02-25x36   | Beamsplitter 520 to couple in 470nm LED with 635nm LED  | [AHF](https://ahf.de/en/products/spectral-analysis-photonic/optical-filters/beamsplitters/epi-fluorescence-beamsplitters/standard-applications/longpass/beamsplitter-hc-520/F38-520)    |
-| (R) | ACL25416U-A | Aspheric Condenser Lens, Ø1", f=16 mm, NA=0.79 | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=ACL25416U-A) |
+| (L) | ZT405/488/561/640rpcv2-UF3 | 4-band fluorescence beamsplitter       | [Chroma](https://www.chroma.com/products/parts/zt405-488-561-640rpcv2)    |
+| (M) | ZET405/488/561/640xv2 | 4-band illumination filter (20mm) | [Chroma](https://www.chroma.com/products/parts/zet405-488-561-640xv2) |
+| (N) | LA1608 | Plano-Convex Lens, Ø1", f = 75 mm | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=LA1608) |
+| (O) | M405L4 | Mounted 405nm LED | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=M405L4) |
+| (O) | M470L5 | Mounted 470nm LED  | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=M470L5) |
+| (O) | M625L4 | Mounted 625nm LED  | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=M625L4) |
+| (P) | FF458-Di02-25x36     | Beamsplitter 458 to couple in 405nm LED | [AHF](https://ahf.de/en/products/spectral-analysis-photonic/optical-filters/beamsplitters/epi-fluorescence-beamsplitters/standard-applications/longpass/beamsplitter-hc-458/F38-458)    |
+| (Q) | FF520-Di02-25x36   | Beamsplitter 520 to couple in 470nm LED with 635nm LED  | [AHF](https://ahf.de/en/products/spectral-analysis-photonic/optical-filters/beamsplitters/epi-fluorescence-beamsplitters/standard-applications/longpass/beamsplitter-hc-520/F38-520)    |
+| (S) | ACL25416U-A | Aspheric Condenser Lenses, Ø1", f=16 mm, NA=0.79 | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=ACL25416U-A) |
 
 ## Information on the Raman add-on:
 
 | ID | Component | Type | supplier |
 | :--- | :---   | :---  | :--- |
 | (H) | ZT775sp-2p-UF3     | Beamsplitter brightfield to add on 785nm Raman   | [Chroma](https://www.chroma.com/products/parts/zt775sp-2p-multiphoton-shortpass-laser-dichroic)    |
-| (S) | F46-950 (RT785rdc + RET785/6x + RET792LP)    | 785 nm Raman Filterset with Beamsplitter      | [AHF](https://ahf.de/en/products/spectral-analysis-photonic/optical-filters/by-application/raman/raman-filter-sets/785-nm-raman-et-lp-filter-set/F46-950)    |
-| (T) | RET 792 LP  | Raman blocking filter from 785 nm Raman Filterset    | [AHF](https://ahf.de/produkte/spektralanalytik-photonik/optische-filter/einzelfilter/langpass-filter/ultrasteil-langpass/raman-filter-ret-792-lp/F76-792R)    |
+| (I) | RET785/6x   | Raman emission filter from 785 nm Raman Filterset      | [AHF](https://ahf.de/en/products/spectral-analysis-photonic/optical-filters/individual-filters/laser-filters/clean-up/785-6-ret-raman-bandpass/F76-785R)  |
+| (J) | XXX   | fiber coupler      | Thorlabs  |
+| (K) | XXX   | fiber laser 785 nm      | Thorlabs  |
+| (T) | F46-950 (RT785rdc + RET785/6x + RET792LP)    | Beamsplitter from 785 nm Raman Filterset      | [AHF](https://ahf.de/en/products/spectral-analysis-photonic/optical-filters/by-application/raman/raman-filter-sets/785-nm-raman-et-lp-filter-set/F46-950)    |
+| (U) | RET 792 LP  | Raman blocking filter from 785 nm Raman Filterset    | [AHF](https://ahf.de/produkte/spektralanalytik-photonik/optische-filter/einzelfilter/langpass-filter/ultrasteil-langpass/raman-filter-ret-792-lp/F76-792R)    |
 
-(U) Extra raman filter	Semrock	LP02-785RU-25???
+(V) Extra raman filter	Semrock	LP02-785RU-25???
 
 ### Cubes, filters and laser-coupling:
-* (I) Laser fiber coupler (Thorlabs, PAF2A-18B)
+* (J) Laser fiber coupler (Thorlabs, PAF2A-18B)
 * Custom aluminium tripple-filter holder (CEPHLA) incl. z-stage motor with objective mount
 * 8x M2 (4mm) countersunk-head screws to close spectrometer lid
 * 3x filter-clamps (Thorlabs, FFM1)
 
 ### Laser-engine with fan-cooling (but no TEC cooler):
 * Cusom anodised aluminium metal base and frame for the assembly (CEPHLA)
-* (J) 785nm fiber laser ([Thorlabs, LP785-SAV50](https://www.thorlabs.com/newgrouppage9.cfm?objectgroup_id=7783&pn=LP785-SAV50#7784))
+* (K) 785nm fiber laser ([Thorlabs, LP785-SAV50](https://www.thorlabs.com/newgrouppage9.cfm?objectgroup_id=7783&pn=LP785-SAV50#7784))
 * ESD Protection and Strain Relief Cable ([Thorlabs, SR9A](https://www.thorlabs.com/newgrouppage9.cfm?objectgroup_id=2710&pn=SR9A))
 * Custom two-piece aluminium laser "clamshell" for thorlabs pig-tailed laser-diodes, similar to [this Thorlabs mount LDM9LP](https://www.thorlabs.com/newgrouppage9.cfm?objectgroup_id=4839) (CEPHLA) - note: I had to manually file the sides of the cable mount to increase the size (at 14.5+ mm) for the strain rrelief cable to pass.
 * Custom thin aluminium mounting plate with screw holes (CEPHLA) - note: I manually added 4 through-holes >2.5mm, 20mm and 25mm apppart respectively, to mount the clamshell
@@ -126,9 +129,9 @@ Image of the illumination arm before the addition of the custom lime-green LED
 
 <img src="images/spectrometer_arrangement.png" width=30%>
 
-* (V) Transmission grating ([LightSmyth, T-1500-875-2516-94](https://www.maxlevy.com/category/TransGrat.html))
-* (W) camera moutable NIR lens
-* (X) NIR-sensitive Camera (IDS, U3-38C0XCP-M-NO) (serial nr. 4108725980)
+* (W) Transmission grating ([LightSmyth, T-1500-875-2516-94](https://www.maxlevy.com/category/TransGrat.html))
+* (X) camera moutable NIR lens
+* (Y) NIR-sensitive Camera (IDS, U3-38C0XCP-M-NO) (serial nr. 4108725980)
 * 4x M3 (6mm) hex-head screws to attach the camera
 * Custom aluminium spectrometer casing in tro parts (base and enclosure) (CEPHLA)
 
