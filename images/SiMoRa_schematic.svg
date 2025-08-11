@@ -1310,8 +1310,8 @@
     <rect
        x="127.5764"
        y="188.25298"
-       width="73.74229"
-       height="10.478212"
+       width="82.891015"
+       height="21.730798"
        id="rect4627-9-7-4-6-9-0-0-0-6" />
     <radialGradient
        inkscape:collect="always"
@@ -1660,8 +1660,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.1026741"
-     inkscape:cx="500.60122"
-     inkscape:cy="469.31364"
+     inkscape:cx="455.25691"
+     inkscape:cy="516.47173"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -1830,10 +1830,10 @@
        y="0"><tspan
          x="141.05474"
          y="194.69091"
-         id="tspan55717">(G) </tspan><tspan
+         id="tspan2686">(G) </tspan><tspan
          x="133.87515"
          y="203.51037"
-         id="tspan55719">camera</tspan></text>
+         id="tspan2688">camera</tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-0-0"
@@ -1843,13 +1843,13 @@
        inkscape:export-ydpi="139.30418"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55721">(E) </tspan><tspan
+         id="tspan2690">(E) </tspan><tspan
          x="127.57617"
          y="203.51037"
-         id="tspan55723">filter </tspan><tspan
+         id="tspan2692">filter </tspan><tspan
          x="127.57617"
          y="212.32982"
-         id="tspan55725">wheeel</tspan></text>
+         id="tspan2694">wheeel</tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-9-4-2-7"
@@ -1859,7 +1859,7 @@
        inkscape:export-ydpi="139.30418"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55727">objective</tspan></text>
+         id="tspan2696">objective</tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-9-4-1"
@@ -1871,7 +1871,7 @@
        y="0"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55729">diffusor</tspan></text>
+         id="tspan2698">diffusor</tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-9-4-1-8"
@@ -1883,11 +1883,11 @@
        y="0"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55731">sample  on 
+         id="tspan2700">sample  on 
 </tspan><tspan
          x="127.57617"
          y="203.51037"
-         id="tspan55733">xy-stage</tspan></text>
+         id="tspan2702">xy-stage</tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-9-4-1-9"
@@ -1899,7 +1899,7 @@
        y="0"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55735">Z-focus</tspan></text>
+         id="tspan2704">Z-focus</tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-9-4-1-9-3"
@@ -1911,7 +1911,7 @@
        y="0"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55737">(T,U) NIR filters</tspan></text>
+         id="tspan2706">(T,U) NIR filters</tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-9-4-1-9-3-3"
@@ -1923,7 +1923,7 @@
        y="0"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55739">(V) grating</tspan></text>
+         id="tspan2708">(V) grating</tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-9-4-1-9-3-3-3"
@@ -1935,7 +1935,7 @@
        y="0"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55741">(W) IR lens</tspan></text>
+         id="tspan2710">(W) IR lens</tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-9-4-22-0"
@@ -1945,7 +1945,7 @@
        inkscape:export-ydpi="139.30418"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55743">(B) lens with</tspan></text>
+         id="tspan2712">(B) lens with</tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-9-4-22-0-7"
@@ -1955,7 +1955,7 @@
        inkscape:export-ydpi="139.30418"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55745">(A) LED matrix</tspan></text>
+         id="tspan2714">(A) LED matrix</tspan></text>
     <path
        style="fill:none;stroke:url(#linearGradient1133-9-1-1);stroke-width:3.39264;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 125.62402,133.21635 V 95.247251"
@@ -2002,10 +2002,10 @@
        y="0"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55747">(K) 446/523/600/677  </tspan><tspan
+         id="tspan2716">(K) 446/523/600/677  </tspan><tspan
          x="127.57617"
          y="203.51037"
-         id="tspan55749">quadband beamsplitter</tspan></text>
+         id="tspan2718">quadband beamsplitter</tspan></text>
     <rect
        style="opacity:1;fill:url(#linearGradient2776-1);fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect3177-68-0"
@@ -2112,7 +2112,7 @@
        y="0"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55751">(C) mirror</tspan></text>
+         id="tspan2720">(C) mirror</tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-9-4-1-9-6-8-5"
@@ -2124,7 +2124,7 @@
        y="0"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55753">(H) NIR coupleing dichroic</tspan></text>
+         id="tspan2722">(H) NIR coupleing dichroic</tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-9-4-1-9-6-8-5-3"
@@ -2136,7 +2136,7 @@
        y="0"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55755">(S) Raman dichroic</tspan></text>
+         id="tspan2724">(S) Raman dichroic</tspan></text>
     <g
        id="g42838"
        transform="translate(61.918105,-40.566425)">
@@ -2233,7 +2233,7 @@
        inkscape:export-ydpi="139.30418"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55757">405nm</tspan></text>
+         id="tspan2726">405nm</tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-53"
@@ -2243,7 +2243,7 @@
        inkscape:export-ydpi="139.30418"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55759">(J) 785nm fiber laser</tspan></text>
+         id="tspan2728">(J) 785nm fiber laser</tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-53-9"
@@ -2253,7 +2253,7 @@
        inkscape:export-ydpi="139.30418"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55761">(I) fiber coupler</tspan></text>
+         id="tspan2730">(I) fiber coupler</tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-8"
@@ -2263,7 +2263,7 @@
        inkscape:export-ydpi="139.30418"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55763">488nm</tspan></text>
+         id="tspan2732">470nm</tspan></text>
     <rect
        style="fill:url(#linearGradient1180-1);fill-opacity:1;stroke:#000000;stroke-width:0.283833;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect3226-6-7-0"
@@ -2283,7 +2283,7 @@
        inkscape:export-ydpi="139.30418"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55765">560nm</tspan></text>
+         id="tspan2734">560nm</tspan></text>
     <rect
        style="fill:url(#linearGradient1180-1-2);fill-opacity:1;stroke:#000000;stroke-width:0.283833;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect3226-6-7-0-7"
@@ -2303,7 +2303,7 @@
        inkscape:export-ydpi="139.30418"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55767">638nm</tspan></text>
+         id="tspan2736">625nm</tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-9-4-2-0-8-6"
@@ -2313,7 +2313,7 @@
        inkscape:export-ydpi="139.30418"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55769">(N) excitation LEDs</tspan></text>
+         id="tspan2738">(N) excitation LEDs</tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-9-4-2-0-8-6-8"
@@ -2323,7 +2323,7 @@
        inkscape:export-ydpi="139.30418"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55771">(R) collector lenses </tspan></text>
+         id="tspan2740">(R) condenser lenses </tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-9-4-2-0-8-6-8-9"
@@ -2333,7 +2333,7 @@
        inkscape:export-ydpi="139.30418"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55773">(Q)</tspan></text>
+         id="tspan2742">(Q)</tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-9-4-2-0-8-6-8-9-0"
@@ -2343,7 +2343,7 @@
        inkscape:export-ydpi="139.30418"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55775">(P)</tspan></text>
+         id="tspan2744">(P)</tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-9-4-2-0-8-6-8-9-0-0"
@@ -2353,7 +2353,7 @@
        inkscape:export-ydpi="139.30418"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55777">(O)</tspan></text>
+         id="tspan2746">(O)</tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-9-4-2-0-8-6-8-6"
@@ -2363,7 +2363,7 @@
        inkscape:export-ydpi="139.30418"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55779">(M) field lens </tspan></text>
+         id="tspan2748">(M) field lens </tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-9-4-2-0-8-6-8-6-4"
@@ -2373,7 +2373,7 @@
        inkscape:export-ydpi="139.30418"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55781">(L) filter </tspan></text>
+         id="tspan2750">(L) filter </tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-9-4-2-0-8-6-8-6-4-0"
@@ -2383,7 +2383,7 @@
        inkscape:export-ydpi="139.30418"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55783">(D) filter </tspan></text>
+         id="tspan2752">(D) filter </tspan></text>
     <text
        xml:space="preserve"
        id="text4625-3-5-9-4-2-0-8-6-8-6-0"
@@ -2393,13 +2393,13 @@
        inkscape:export-ydpi="139.30418"><tspan
          x="127.57617"
          y="194.69091"
-         id="tspan55785">(F) </tspan><tspan
+         id="tspan2754">(F) </tspan><tspan
          x="127.57617"
          y="203.51037"
-         id="tspan55787">tube </tspan><tspan
+         id="tspan2756">tube </tspan><tspan
          x="127.57617"
          y="212.32982"
-         id="tspan55789">lens </tspan></text>
+         id="tspan2758">lens </tspan></text>
     <rect
        style="fill:url(#linearGradient5196);fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect3177-68-0-44"
@@ -2462,11 +2462,11 @@
        y="0"><tspan
          x="149.48887"
          y="194.69091"
-         id="tspan55791">(X) 
+         id="tspan2760">(X) 
 </tspan><tspan
          x="143.23258"
          y="203.51037"
-         id="tspan55793">camera</tspan></text>
+         id="tspan2762">camera</tspan></text>
     <path
        id="rect3204-3-8-1-6-2-7"
        style="fill:url(#linearGradient28194);fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
