@@ -27,22 +27,32 @@ Is based on the SQUID/OCTOPI 60x60mm inverted stage.
 
 The CO2 incubator enclosure "IncuTEC" is documented in a [seperate repository](https://github.com/wenzel-lab/IncuTEC).
 
-## Optical filters used
-| Filter | Type | supplier |
-| :---   | :---  | :--- |
-| FF458-Di02-25x36     | Beamsplitter 458 to couple in 405nm LED | [AHF](https://ahf.de/en/products/spectral-analysis-photonic/optical-filters/beamsplitters/epi-fluorescence-beamsplitters/standard-applications/longpass/beamsplitter-hc-458/F38-458)    |
-| FF520-Di02-25x36   | Beamsplitter 520 to couple in 470nm LED with 635nm LED  | [AHF](https://ahf.de/en/products/spectral-analysis-photonic/optical-filters/beamsplitters/epi-fluorescence-beamsplitters/standard-applications/longpass/beamsplitter-hc-520/F38-520)    |
-| ZT405/488/561/640rpcv2-UF3 | 4-band fluorescence beamsplitter       | [Chroma](https://www.chroma.com/products/parts/zt405-488-561-640rpcv2)    |
-| FF01-446/523/600/677-25   | 4-band blocking filter for all fluorescence channels    | [Laser2000](https://photonics.laser2000.co.uk/products/light-delivery-and-control/microscopy-filters/filter-sets-cubes/full-multiband-sets/brightline-full-multiband-laser-filter-set-405-488-561-635-nm-laser-sources/)  |
-| ZET405/488/561/640xv2 | 4-band illumination filter (20mm) | [Chroma](https://www.chroma.com/products/parts/zet405-488-561-640xv2) |
-| ZT775sp-2p-UF3     | Beamsplitter brightfield to add on 785nm Raman   | [Chroma](https://www.chroma.com/products/parts/zt775sp-2p-multiphoton-shortpass-laser-dichroic)    |
-| F46-950 (RT785rdc + RET785/6x + RET792LP)    | 785 nm Raman Filterset with Beamsplitter, Bandpass and Emitter      | [AHF](https://ahf.de/en/products/spectral-analysis-photonic/optical-filters/by-application/raman/raman-filter-sets/785-nm-raman-et-lp-filter-set/F46-950)    |
+## Optical components used
 
-<img src="images/epifluorescence_led_assembly.jpg" width=30%>
+<p align="left">
+<img src="./images/SiMoRa_schematic.jpg" width="500">
+</p>
+
+### OctoPi Bright field illumination
+
+| ID | Component | Type | supplier |
+| :--- | :---   | :---  | :--- |
+| (A) | custom    | OctoPi LED matrix    | [Cephla]([https://www.thorlabs.com/thorproduct.cfm?partnumber=ACL2520U-DG6-A](https://octopi.cephla.com))  |
+| (B) | ACL2520U-DG6-A   | Aspheric Condenser Lens w/ Diffuser, Ø25 mm, f=20.1 mm, NA=0.60    | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=ACL2520U-DG6-A)  |
+
+### Detection (camera) arm:
+
+| ID | Component | Type | supplier |
+| :--- | :---   | :---  | :--- |
+| (C) | BB1-E02   | Ø1" Broadband Dielectric Mirror    | [Thorlabs](https://www.thorlabs.com/newgrouppage9.cfm?objectgroup_id=139&pn=BB1-E02#2147)  |
+| (D) | FF01-446/523/600/677-25   | 4-band blocking filter for all fluorescence channels    | [Laser2000](https://photonics.laser2000.co.uk/products/light-delivery-and-control/microscopy-filters/filter-sets-cubes/full-multiband-sets/brightline-full-multiband-laser-filter-set-405-488-561-635-nm-laser-sources/)  |
+| (E) | EFW | ZWO-asto mini electronic filter wheel      | [ZWO-asto](https://www.zwoastro.com/product/efw/)    |
+| (F) | XXX     | 50mm 10MP lens machine vision | ToDo: Add supplier,  CEPHLA  |
+| (G) | MER2-1220-32U3M   | Monochrome Camera (Sony IMX226 Rolling shutter CMOS)  | DAHENG IMAGING    |
 
 <img src="images/filterwheel.jpeg" width=20%>
 
-Inspired by the [Benchtop mesoSPIM light sheet microscope](https://github.com/mesoSPIM/benchtop-hardware/tree/main), we have incorporated the [ZWO-asto mini electronic filter wheel (EFW)](https://www.zwoastro.com/product/efw/) with the following filter selections:
+Inspired by the [Benchtop mesoSPIM light sheet microscope](https://github.com/mesoSPIM/benchtop-hardware/tree/main), we have incorporated the (E) ZWO-asto mini electronic filter wheel (EFW) with the following filter selections:
 | Position | Filter | Type | supplier |
 | :---   | :---   | :---  | :--- |
 |#1 - All| none     | The four bands of the multiband blockig filter are visible simultaneously |     |
@@ -51,15 +61,43 @@ Inspired by the [Benchtop mesoSPIM light sheet microscope](https://github.com/me
 |#4 - Orange| 600/37 BrightLine HC     | Filter organge | [AHF](https://ahf.de/produkte/spektralanalytik-photonik/optische-filter/einzelfilter/bandpass-filter/600-699-nm/600-37-brightline-hc/F39-637)    |
 |#5 - Red| 635 LP Langpass-Filter     | Filter red , e.g. PI stain | [AHF](https://ahf.de/produkte/spektralanalytik-photonik/optische-filter/einzelfilter/langpass-filter/600-699-nm/635-lp-edge-basic-langpass-filter/F76-635)    |
 
+### LED excitation arm:
+
+Image of the illumination arm before the addition of the custom lime-green LED
+
+<img src="images/epifluorescence_led_assembly.jpg" width=30%>
+
+| ID | Component | Type | supplier |
+| :--- | :---   | :---  | :--- |
+| (K) | ZT405/488/561/640rpcv2-UF3 | 4-band fluorescence beamsplitter       | [Chroma](https://www.chroma.com/products/parts/zt405-488-561-640rpcv2)    |
+| (L) | ZET405/488/561/640xv2 | 4-band illumination filter (20mm) | [Chroma](https://www.chroma.com/products/parts/zet405-488-561-640xv2) |
+| (M) | LA1608 | Plano-Convex Lens, Ø1", f = 75 mm | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=LA1608) |
+| (N) | M405L4 | Mounted 405nm LED | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=M405L4) |
+| (N) | M470L5 | Mounted 470nm LED  | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=M470L5) |
+| (N) | M625L4 | Mounted 625nm LED  | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=M625L4) |
+| (O) | FF458-Di02-25x36     | Beamsplitter 458 to couple in 405nm LED | [AHF](https://ahf.de/en/products/spectral-analysis-photonic/optical-filters/beamsplitters/epi-fluorescence-beamsplitters/standard-applications/longpass/beamsplitter-hc-458/F38-458)    |
+| (P) | FF520-Di02-25x36   | Beamsplitter 520 to couple in 470nm LED with 635nm LED  | [AHF](https://ahf.de/en/products/spectral-analysis-photonic/optical-filters/beamsplitters/epi-fluorescence-beamsplitters/standard-applications/longpass/beamsplitter-hc-520/F38-520)    |
+| (R) | ACL25416U-A | Aspheric Condenser Lens, Ø1", f=16 mm, NA=0.79 | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=ACL25416U-A) |
+
 ## Information on the Raman add-on:
 
-<p align="left">
-<img src="./images/SiMoRa_schematic.jpg" width="500">
-</p>
+| ID | Component | Type | supplier |
+| :--- | :---   | :---  | :--- |
+| (H) | ZT775sp-2p-UF3     | Beamsplitter brightfield to add on 785nm Raman   | [Chroma](https://www.chroma.com/products/parts/zt775sp-2p-multiphoton-shortpass-laser-dichroic)    |
+| (S) | F46-950 (RT785rdc + RET785/6x + RET792LP)    | 785 nm Raman Filterset with Beamsplitter      | [AHF](https://ahf.de/en/products/spectral-analysis-photonic/optical-filters/by-application/raman/raman-filter-sets/785-nm-raman-et-lp-filter-set/F46-950)    |
+| (T) | RET 792 LP  | Raman blocking filter from 785 nm Raman Filterset    | [AHF](https://ahf.de/produkte/spektralanalytik-photonik/optische-filter/einzelfilter/langpass-filter/ultrasteil-langpass/raman-filter-ret-792-lp/F76-792R)    |
+
+(U) Extra raman filter	Semrock	LP02-785RU-25???
+
+### Cubes, filters and laser-coupling:
+* (I) Laser fiber coupler (Thorlabs, PAF2A-18B)
+* Custom aluminium tripple-filter holder (CEPHLA) incl. z-stage motor with objective mount
+* 8x M2 (4mm) countersunk-head screws to close spectrometer lid
+* 3x filter-clamps (Thorlabs, FFM1)
 
 ### Laser-engine with fan-cooling (but no TEC cooler):
 * Cusom anodised aluminium metal base and frame for the assembly (CEPHLA)
-* 785nm fiber laser ([Thorlabs, LP785-SAV50](https://www.thorlabs.com/newgrouppage9.cfm?objectgroup_id=7783&pn=LP785-SAV50#7784))
+* (J) 785nm fiber laser ([Thorlabs, LP785-SAV50](https://www.thorlabs.com/newgrouppage9.cfm?objectgroup_id=7783&pn=LP785-SAV50#7784))
 * ESD Protection and Strain Relief Cable ([Thorlabs, SR9A](https://www.thorlabs.com/newgrouppage9.cfm?objectgroup_id=2710&pn=SR9A))
 * Custom two-piece aluminium laser "clamshell" for thorlabs pig-tailed laser-diodes, similar to [this Thorlabs mount LDM9LP](https://www.thorlabs.com/newgrouppage9.cfm?objectgroup_id=4839) (CEPHLA) - note: I had to manually file the sides of the cable mount to increase the size (at 14.5+ mm) for the strain rrelief cable to pass.
 * Custom thin aluminium mounting plate with screw holes (CEPHLA) - note: I manually added 4 through-holes >2.5mm, 20mm and 25mm apppart respectively, to mount the clamshell
@@ -87,26 +125,17 @@ Inspired by the [Benchtop mesoSPIM light sheet microscope](https://github.com/me
 
 <img src="images/spectrometer_arrangement.png" width=30%>
 
-* NIR-sensitive Camera (IDS, U3-38C0XCP-M-NO) (serial nr. 4108725980)
-* camera moutable NIR lens
+* (V) Transmission grating ([LightSmyth, T-1500-875-2516-94](https://www.maxlevy.com/category/TransGrat.html))
+* (W) camera moutable NIR lens
+* (X) NIR-sensitive Camera (IDS, U3-38C0XCP-M-NO) (serial nr. 4108725980)
 * 4x M3 (6mm) hex-head screws to attach the camera
-* Transmission grating ([LightSmyth, T-1500-875-2516-94](https://www.maxlevy.com/category/TransGrat.html))
 * Custom aluminium spectrometer casing in tro parts (base and enclosure) (CEPHLA)
-
-### Cubes, filters and laser-coupling:
-* Laser-coupler (Thorlabs, PAF2A-18B)
-* Custom aluminium tripple-filter holder (CEPHLA) incl. z-stage motor with objective mount
-* 8x M2 (4mm) countersunk-head screws to close spectrometer lid
-* 3x filter-clamps (Thorlabs, FFM1)
 
 Questions:
 * Where does the spectrometer lens come from (part number, supplier)?
   
-needed:
+Needed:
 * 2x imperial 2-56 screws (ca. 5mm) to fix the laser head to the laser "clamshell"
-
-not used:
-* (was meant as laser and TEC driver for a higher-power laser driver): Custom main single channel laser-engine board (here V1.1)) with Teensy-mount at front, cooled TCM1040/1041 mount, and tec-driver break-out at back (Yexian, 1041 V0.4.1) (CEPHLA)
 
 
 Follow us! [#twitter](https://twitter.com/WenzelLab), [#YouTube](https://www.youtube.com/@librehub), [#LinkedIn](https://www.linkedin.com/company/92802424), [#instagram](https://www.instagram.com/wenzellab/), [#Printables](https://www.printables.com/@WenzelLab), [#LIBREhub website](https://librehub.github.io), [#IIBM website](https://ingenieriabiologicaymedica.uc.cl/en/people/faculty/821-tobias-wenzel)
