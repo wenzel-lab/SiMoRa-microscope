@@ -50,9 +50,10 @@ The CO2 incubator enclosure "IncuTEC" is documented in a [seperate repository](h
 | (F) | XXX     | 50mm 10MP lens machine vision | ToDo: Add supplier,  CEPHLA  |
 | (G) | MER2-1220-32U3M   | Monochrome Camera (Sony IMX226 Rolling shutter CMOS)  | DAHENG IMAGING    |
 
+Inspired by the [Benchtop mesoSPIM light sheet microscope](https://github.com/mesoSPIM/benchtop-hardware/tree/main), we have incorporated the (E) ZWO-asto mini electronic filter wheel (EFW) with the following filter selections:
+
 <img src="images/filterwheel.jpeg" width=20%>
 
-Inspired by the [Benchtop mesoSPIM light sheet microscope](https://github.com/mesoSPIM/benchtop-hardware/tree/main), we have incorporated the (E) ZWO-asto mini electronic filter wheel (EFW) with the following filter selections:
 | Position | Filter | Type | supplier |
 | :---   | :---   | :---  | :--- |
 |#1 - All| none     | The four bands of the multiband blockig filter are visible simultaneously |     |
