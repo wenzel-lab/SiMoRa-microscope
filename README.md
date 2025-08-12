@@ -92,8 +92,7 @@ Image of the illumination arm before the addition of the custom lime-green LED
 | (K) | XXX   | fiber laser 785 nm      | Thorlabs  |
 | (T) | F46-950 (RT785rdc + RET785/6x + RET792LP)    | Beamsplitter from 785 nm Raman Filterset      | [AHF](https://ahf.de/en/products/spectral-analysis-photonic/optical-filters/by-application/raman/raman-filter-sets/785-nm-raman-et-lp-filter-set/F46-950)    |
 | (U) | RET 792 LP  | Raman blocking filter from 785 nm Raman Filterset    | [AHF](https://ahf.de/produkte/spektralanalytik-photonik/optische-filter/einzelfilter/langpass-filter/ultrasteil-langpass/raman-filter-ret-792-lp/F76-792R)    |
-
-(V) Extra raman filter	Semrock	LP02-785RU-25???
+| (V) | LP02-785RU-25  | Additional Raman blocking filter   | [IDEX Semrock](https://www.idex-hs.com/store/product-detail/lp02_785ru_25/fl-009072)    |
 
 ### Cubes, filters and laser-coupling:
 * (J) Laser fiber coupler (Thorlabs, PAF2A-18B)
