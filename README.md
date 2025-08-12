@@ -75,9 +75,11 @@ Image of the illumination arm before the addition of the custom lime-green LED
 | (N) | LA1608 | Plano-Convex Lens, Ø1", f = 75 mm | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=LA1608) |
 | (O) | M405L4 | Mounted 405nm LED | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=M405L4) |
 | (O) | M470L5 | Mounted 470nm LED  | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=M470L5) |
+| (O) | SP-01-L1 | Custom mounted (567nm) Rebel LED on Star | [LUXEON Star](https://luxeonstar.com/product/sp-01-l1/) |
 | (O) | M625L4 | Mounted 625nm LED  | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=M625L4) |
 | (P) | FF458-Di02-25x36     | Beamsplitter 458 to couple in 405nm LED | [AHF](https://ahf.de/en/products/spectral-analysis-photonic/optical-filters/beamsplitters/epi-fluorescence-beamsplitters/standard-applications/longpass/beamsplitter-hc-458/F38-458)    |
 | (Q) | FF520-Di02-25x36   | Beamsplitter 520 to couple in 470nm LED with 635nm LED  | [AHF](https://ahf.de/en/products/spectral-analysis-photonic/optical-filters/beamsplitters/epi-fluorescence-beamsplitters/standard-applications/longpass/beamsplitter-hc-520/F38-520)    |
+| (R) | T 565 LPXR   | Beamsplitter 565 to couple in 567nm LED with 635nm LED (not ideal)  | [AHF](https://www.ahf.de/produkte/spektralanalytik-photonik/optische-filter/strahlenteiler/epi-fluoreszenz-strahlenteiler/standard-strahlenteiler/langpass/2520/strahlenteiler-t-565-lpxr)    |
 | (S) | ACL25416U-A | Aspheric Condenser Lenses, Ø1", f=16 mm, NA=0.79 | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=ACL25416U-A) |
 
 ## Information on the Raman add-on:
