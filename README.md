@@ -30,7 +30,7 @@ The CO2 incubator enclosure "IncuTEC" is documented in a [seperate repository](h
 ## Optical components used
 
 <p align="left">
-<img src="./images/SiMoRa_schematic.jpg" width="500">
+<img src="./images/SiMoRa_schematic.jpg" width="600">
 </p>
 
 ### OctoPi Bright field illumination
