@@ -7,17 +7,6 @@ Squid (Simplifying Quantitive Imaging Development and Deployment) provides a ful
 * [1] Hongquan Li, Deepak Krishnamurthy, Ethan Li, Pranav Vyas, Nibha Akireddy, Chew Chai, Manu Prakash, "**Squid: Simplifying Quantitative Imaging Platform Development and Deployment**." BiorXiv [ link | [website](https://squid-imaging.org)]
 * [2] Deepak Krishnamurthy, Hongquan Li, François Benoit du Rey, Pierre Cambournac, Adam G. Larson, Ethan Li, and Manu Prakash. "**Scale-free vertical tracking microscopy.**" Nature Methods 17, no. 10 (2020): 1040-1051. [ [link](https://www.nature.com/articles/s41592-020-0924-7) | [website](https://gravitymachine.org) ]
 
-## SQUID resources from the original creators (which only partially correspond to this newer version)
-- main software repo: [GitHub](https://github.com/hongquanli/octopi-research) (this repo)
-- tracking software repo: [GitHub](https://github.com/prakashlab/squid-tracking)
-- CAD models/photos of assembled squids: [Google Drive](https://drive.google.com/drive/folders/1JdVp34HtERGpBCBlFX6jFDwMUdeBLCEx?usp=sharing)
-- BOM for the microscope, including CAD files for CNC machining: [link](https://docs.google.com/spreadsheets/d/1WA64HySj9I7XROtTXuaRvjlbhHXRGspvoxb_20CWDR8/edit?usp=drivesdk)
-- BOM for the multicolor laser engine: [link](https://docs.google.com/spreadsheets/d/1hEM6PsxZPTp1LY3cpxUJOS3Q1YLQN-xniF33ZddFj9U/edit#gid=1175873468)
-- BOM for the control panel: [link](https://docs.google.com/spreadsheets/d/1z2HjibIG9PHffiDsbuzQXmvf2gSFMduHrXkPwDbcXRY/edit?usp=sharing)
-- Eearly Results, Related Work and Possible Applications www.squid-imaging.org
-- Forum to discuss instructions: https://forum.squid-imaging.org
-- Spin-off company: https://cephla.com/product/squid/
-
 # Our custom implementation
 
 Is based on the SQUID/OCTOPI 60x60mm inverted stage.
@@ -141,6 +130,17 @@ Questions:
   
 Needed:
 * 2x imperial 2-56 screws (ca. 5mm) to fix the laser head to the laser "clamshell"
+
+## SQUID resources from the original creators (which only partially correspond to this newer version)
+- main software repo: [GitHub](https://github.com/hongquanli/octopi-research) (this repo)
+- tracking software repo: [GitHub](https://github.com/prakashlab/squid-tracking)
+- CAD models/photos of assembled squids: [Google Drive](https://drive.google.com/drive/folders/1JdVp34HtERGpBCBlFX6jFDwMUdeBLCEx?usp=sharing)
+- BOM for the microscope, including CAD files for CNC machining: [link](https://docs.google.com/spreadsheets/d/1WA64HySj9I7XROtTXuaRvjlbhHXRGspvoxb_20CWDR8/edit?usp=drivesdk)
+- BOM for the multicolor laser engine: [link](https://docs.google.com/spreadsheets/d/1hEM6PsxZPTp1LY3cpxUJOS3Q1YLQN-xniF33ZddFj9U/edit#gid=1175873468)
+- BOM for the control panel: [link](https://docs.google.com/spreadsheets/d/1z2HjibIG9PHffiDsbuzQXmvf2gSFMduHrXkPwDbcXRY/edit?usp=sharing)
+- Eearly Results, Related Work and Possible Applications www.squid-imaging.org
+- Forum to discuss instructions: https://forum.squid-imaging.org
+- Spin-off company: https://cephla.com/product/squid/
 
 
 Follow us! [#twitter](https://twitter.com/WenzelLab), [#YouTube](https://www.youtube.com/@librehub), [#LinkedIn](https://www.linkedin.com/company/92802424), [#instagram](https://www.instagram.com/wenzellab/), [#Printables](https://www.printables.com/@WenzelLab), [#LIBREhub website](https://librehub.github.io), [#IIBM website](https://ingenieriabiologicaymedica.uc.cl/en/people/faculty/821-tobias-wenzel)
