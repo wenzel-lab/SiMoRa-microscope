@@ -83,6 +83,8 @@ Image of the illumination arm before the addition of the custom lime-green LED
 | (U) | RET 792 LP  | Raman blocking filter from 785 nm Raman Filterset    | [AHF](https://ahf.de/produkte/spektralanalytik-photonik/optische-filter/einzelfilter/langpass-filter/ultrasteil-langpass/raman-filter-ret-792-lp/F76-792R)    |
 | (V) | LP02-785RU-25  | Additional Raman blocking filter   | [IDEX Semrock](https://www.idex-hs.com/store/product-detail/lp02_785ru_25/fl-009072)    |
 
+now using this beamsplitter from sorter: https://www.idex-hs.com/store/product-detail/di03_r405_488_561_635_t1_25x36/fl-007139
+
 ### Cubes, filters and laser-coupling:
 * (J) Laser fiber coupler (Thorlabs, PAF2A-18B)
 * Custom aluminium tripple-filter holder (CEPHLA) incl. z-stage motor with objective mount
