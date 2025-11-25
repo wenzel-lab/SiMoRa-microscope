@@ -67,8 +67,8 @@ Image of the illumination arm before the addition of the custom lime-green LED
 | (O) | XXX | Custom mounted lime green (567nm) LED on Star | Aliexpress |
 | (O) | M625L4 | Mounted 625nm LED  | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=M625L4) |
 | (P) | FF458-Di02-25x36     | Beamsplitter 458 to couple in 405nm LED | [AHF](https://ahf.de/en/products/spectral-analysis-photonic/optical-filters/beamsplitters/epi-fluorescence-beamsplitters/standard-applications/longpass/beamsplitter-hc-458/F38-458)    |
-| (Q) | FF520-Di02-25x36   | Beamsplitter 520 to couple in 470nm LED with 635nm LED  | [AHF](https://ahf.de/en/products/spectral-analysis-photonic/optical-filters/beamsplitters/epi-fluorescence-beamsplitters/standard-applications/longpass/beamsplitter-hc-520/F38-520)    |
-| (R) | T 565 LPXR   | Beamsplitter 565 to couple in 567nm LED with 635nm LED (not ideal)  | [AHF](https://www.ahf.de/produkte/spektralanalytik-photonik/optische-filter/strahlenteiler/epi-fluoreszenz-strahlenteiler/standard-strahlenteiler/langpass/2520/strahlenteiler-t-565-lpxr)    |
+| (Q) | FF520-Di02-25x36   | Beamsplitter 520 to couple in 470nm LED  | [AHF](https://ahf.de/en/products/spectral-analysis-photonic/optical-filters/beamsplitters/epi-fluorescence-beamsplitters/standard-applications/longpass/beamsplitter-hc-520/F38-520)    |
+| (R) | T 565 LPXR   | Beamsplitter 565 to couple in 567nm LED with 635nm LED (not ideal)  | [AHF](https://ahf.de/produkte/photonik/optische-filter/strahlenteiler-nach-anwendung/epi-fluoreszenz/strahlenteiler-t-565-lpxr/F48-567)    |
 | (S) | ACL25416U-A | Aspheric Condenser Lenses, Ø1", f=16 mm, NA=0.79 | [Thorlabs](https://www.thorlabs.com/thorproduct.cfm?partnumber=ACL25416U-A) |
 
 ## Information on the Raman add-on:
