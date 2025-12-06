@@ -1,20 +1,41 @@
-# Core GUI and numerics
-pyqt5
-pyqtgraph
-qtpy
-numpy
-scipy
-pandas
+# SiMoRa Microscope - Python Dependencies
+# Compatible with Python 3.8 and 3.9
+# For Teensy 4.1 backend support
 
-# Imaging and I/O
-opencv-python
-opencv-contrib-python
-lxml
-imageio
+# Core GUI framework (PyQt5 ecosystem)
+PyQt5==5.15.10
+PyQt5-Qt5==5.15.2
+PyQt5-sip==12.13.0
+pyqtgraph==0.13.3
+qtpy==2.4.1
 
-# Hardware comms
-pyserial
-crc
+# Numerical computing and data analysis
+numpy==1.21.6
+scipy==1.7.3
+pandas==1.3.5
 
-# Optional (only if fluorescence RTP is enabled)
-scikit-image
+# Computer vision and image processing
+opencv-python==4.5.5.64
+opencv-contrib-python==4.5.5.64
+
+# XML/HTML processing (for configuration files)
+lxml==4.9.2
+
+# Image I/O
+imageio==2.19.3
+
+# Serial communication (for Teensy microcontroller)
+pyserial==3.5
+
+# CRC calculation (for Teensy protocol CRC-8)
+crc==1.2.0
+
+# Logging utilities (for squid.logging)
+platformdirs==3.2.0
+
+# Optional: For fluorescence RTP (only if DO_FLUORESCENCE_RTP is enabled)
+# scikit-image==0.19.2
+
+# Note: Daheng camera support requires additional drivers
+# See: software/drivers and libraries/daheng camera/README.md
+# The gxipy module is included in the repo and doesn't need pip installation

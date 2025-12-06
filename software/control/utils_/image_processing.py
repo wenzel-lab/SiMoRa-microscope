@@ -7,7 +7,7 @@ Created on Mon May  7 19:44:40 2018
 
 import numpy as np
 import cv2
-from scipy.ndimage.filters import laplace
+from scipy.ndimage import laplace
 from numpy import std, square, mean
 
 #color is a vector HSV whose size is 3

@@ -6,12 +6,15 @@ import time
 import numpy as np
 import threading
 from crc import CrcCalculator, Crc8
+import struct
 
 from control._def import *
 
 from qtpy.QtCore import *
 from qtpy.QtWidgets import *
 from qtpy.QtGui import *
+
+import squid.logging
 
 # add user to the dialout group to avoid the need to use sudo
 
@@ -21,12 +24,92 @@ from qtpy.QtGui import *
 
 # to do (7/28/2021) - add functions for configuring the stepper motors
 
-class Microcontroller():    
-    def __init__(self,version='Arduino Due',sn=None,parent=None):
+class SimSerial:
+    @staticmethod
+    def response_bytes_for(command_id, execution_status, x, y, z, theta, joystick_button, switch):
+        """
+        - command ID (1 byte)
+        - execution status (1 byte)
+        - X pos (4 bytes)
+        - Y pos (4 bytes)
+        - Z pos (4 bytes)
+        - Theta (4 bytes)
+        - buttons and switches (1 byte)
+        - reserved (4 bytes)
+        - CRC (1 byte)
+        """
+        crc_calculator = CrcCalculator(Crc8.CCITT,table_based=True)
+
+        button_state = joystick_button << BIT_POS_JOYSTICK_BUTTON | switch << BIT_POS_SWITCH
+        reserved_state = 0 # This is just filler for the 4 reserved bytes.
+        response = bytearray(struct.pack(">BBiiiiBi", command_id, execution_status, x, y, z, theta, button_state, reserved_state))
+        response.append(crc_calculator.calculate_checksum(response))
+        return response
+
+    def __init__(self):
+        self.in_waiting = 0
+        self.response_buffer = []
+
+        self.x = 0
+        self.y = 0
+        self.z = 0
+        self.theta = 0
+        self.joystick_button = False
+        self.switch = False
+
+        self.closed = False
+
+    def respond_to(self, write_bytes):
+        # Just immediately respond that the command was successful.  We can
+        # implement specific command handlers here in the future for eg:
+        # correct position tracking and such.
+        self.response_buffer.extend(SimSerial.response_bytes_for(
+            write_bytes[0],
+            CMD_EXECUTION_STATUS.COMPLETED_WITHOUT_ERRORS,
+            self.x,
+            self.y,
+            self.z,
+            self.theta,
+            self.joystick_button,
+            self.switch))
+
+        self.in_waiting = len(self.response_buffer)
+
+    def close(self):
+        self.closed = True
+
+    def write(self, data):
+        if self.closed:
+            raise IOError("Closed")
+        self.respond_to(data)
+
+    def read(self, count=1):
+        if self.closed:
+            raise IOError("Closed")
+
+        response = bytearray()
+        for i in range(count):
+            if not len(self.response_buffer):
+                break
+            response.append(self.response_buffer.pop(0))
+
+        self.in_waiting = len(self.response_buffer)
+        return response
+
+
+class Microcontroller:
+    # Loosen ack timeout/retries to match Teensy firmware behavior.
+    LAST_COMMAND_ACK_TIMEOUT = 5.0
+    MAX_RETRY_COUNT = 10
+
+    def __init__(self, version='Teensy', sn=None, existing_serial=None, is_simulation=False, parent=None):
+        self.is_simulation = is_simulation
         self.serial = None
         self.platform_name = platform.system()
         self.tx_buffer_length = MicrocontrollerDef.CMD_LENGTH
         self.rx_buffer_length = MicrocontrollerDef.MSG_LENGTH
+
+        self.log = squid.logging.get_logger(self.__class__.__name__)
 
         self._cmd_id = 0
         self._cmd_id_mcu = None # command id of mcu's last received command 
@@ -43,33 +126,37 @@ class Microcontroller():
         self.switch_state = 0
 
         self.last_command = None
-        self.timeout_counter = 0
-        self.last_command_timestamp = time.time()
+        self.last_command_send_timestamp = time.time()
+        self.last_command_aborted_error = None
 
         self.crc_calculator = CrcCalculator(Crc8.CCITT,table_based=True)
         self.retry = 0
 
-        print('connecting to controller based on ' + version)
+        self.log.debug("connecting to controller based on " + version)
 
-        if version =='Arduino Due':
-            controller_ports = [p.device for p in serial.tools.list_ports.comports() if 'Arduino Due' == p.description] # autodetect - based on Deepak's code
+        if existing_serial:
+            self.serial = existing_serial
         else:
-            if sn is not None:
-                controller_ports = [ p.device for p in serial.tools.list_ports.comports() if sn == p.serial_number]
+            if version =='Arduino Due':
+                controller_ports = [p.device for p in serial.tools.list_ports.comports() if 'Arduino Due' == p.description] # autodetect - based on Deepak's code
             else:
-                if sys.platform == 'win32':
-                    controller_ports = [ p.device for p in serial.tools.list_ports.comports() if p.manufacturer == 'Microsoft']
+                if sn is not None:
+                    controller_ports = [ p.device for p in serial.tools.list_ports.comports() if sn == p.serial_number]
                 else:
-                    controller_ports = [ p.device for p in serial.tools.list_ports.comports() if p.manufacturer == 'Teensyduino']
+                    if sys.platform == 'win32':
+                        controller_ports = [ p.device for p in serial.tools.list_ports.comports() if p.manufacturer == 'Microsoft']
+                    else:
+                        controller_ports = [ p.device for p in serial.tools.list_ports.comports() if p.manufacturer == 'Teensyduino']
 
-        if not controller_ports:
-            raise IOError("no controller found")
-        if len(controller_ports) > 1:
-            print('multiple controller found - using the first')
+            if not controller_ports:
+                raise IOError("no controller found")
+            if len(controller_ports) > 1:
+                self.log.warning("multiple controller found - using the first")
+            
+            self.serial = serial.Serial(controller_ports[0],2000000)
+            time.sleep(0.2)
         
-        self.serial = serial.Serial(controller_ports[0],2000000)
-        time.sleep(0.2)
-        print('controller connected')
+        self.log.debug("controller connected")
 
         self.new_packet_callback_external = None
         self.terminate_reading_received_packet_thread = False
@@ -623,6 +710,10 @@ class Microcontroller():
     def turn_off_AF_laser(self):
         self.set_pin_level(MCU_PINS.AF_LASER,0)
 
+    def set_axis_enable_disable(self, axis, status):
+        # Not supported by the Teensy firmware used here; keep API but make it a no-op.
+        self.log.debug("set_axis_enable_disable ignored for Teensy firmware (axis=%s, status=%s)", axis, status)
+
     def send_command(self,command):
         self._cmd_id = (self._cmd_id + 1)%256
         command[0] = self._cmd_id
@@ -630,15 +721,32 @@ class Microcontroller():
         self.serial.write(command)
         self.mcu_cmd_execution_in_progress = True
         self.last_command = command
-        self.timeout_counter = 0
-        self.last_command_timestamp = time.time()
+        self.last_command_send_timestamp = time.time()
         self.retry = 0
 
+        if self.last_command_aborted_error is not None:
+            self.log.warning("Last command aborted and not cleared before new command sent!", self.last_command_aborted_error)
+        self.last_command_aborted_error = None
+
+    def abort_current_command(self, reason):
+        self.log.error(f"Command id={self._cmd_id} aborted for reason='{reason}'")
+        self.last_command_aborted_error = RuntimeError(reason)
+        self.mcu_cmd_execution_in_progress = False
+
+    def acknowledge_aborted_command(self):
+        if self.last_command_aborted_error is None:
+            self.log.warning("Request to ack aborted command, but there is no aborted command.")
+        self.last_command_aborted_error = None
+
     def resend_last_command(self):
-        self.serial.write(self.last_command)
-        self.mcu_cmd_execution_in_progress = True
-        self.timeout_counter = 0
-        self.retry = self.retry + 1
+        if self.last_command is not None:
+            self.serial.write(self.last_command)
+            self.mcu_cmd_execution_in_progress = True
+            self.last_command_send_timestamp = time.time()
+            self.retry = self.retry + 1
+        else:
+            self.log.warning("resend requested with no last_command, something is wrong!")
+            self.abort_current_command("Resend last requested with no last command")
 
     def read_received_packet(self):
         while self.terminate_reading_received_packet_thread == False:
