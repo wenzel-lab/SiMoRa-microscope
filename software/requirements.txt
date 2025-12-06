@@ -3,6 +3,7 @@
 # For Teensy 4.1 backend support
 
 # Core GUI framework (PyQt5 ecosystem)
+# PyQt5 provides Qt5 bindings for GUI, pyqtgraph for real-time plotting, qtpy for abstraction
 PyQt5==5.15.10
 PyQt5-Qt5==5.15.2
 PyQt5-sip==12.13.0
@@ -10,32 +11,40 @@ pyqtgraph==0.13.3
 qtpy==2.4.1
 
 # Numerical computing and data analysis
+# numpy for array operations, scipy for signal processing, pandas for data manipulation
 numpy==1.21.6
 scipy==1.7.3
 pandas==1.3.5
 
 # Computer vision and image processing
+# opencv-python for basic image operations, opencv-contrib-python for additional modules
 opencv-python==4.5.5.64
 opencv-contrib-python==4.5.5.64
 
 # XML/HTML processing (for configuration files)
+# lxml for parsing XML configuration files used by ConfigurationManager
 lxml==4.9.2
 
 # Image I/O
+# imageio for reading/writing image files in various formats
 imageio==2.19.3
 
 # Serial communication (for Teensy microcontroller)
+# pyserial for USB serial communication with Teensy 4.1 at 2 Mbps
 pyserial==3.5
 
 # CRC calculation (for Teensy protocol CRC-8)
+# crc library for CRC-8 CCITT checksum calculation in microcontroller protocol
 crc==1.2.0
 
 # Logging utilities (for squid.logging)
+# platformdirs for cross-platform log directory paths used by squid.logging
 platformdirs==3.2.0
 
 # Optional: For fluorescence RTP (only if DO_FLUORESCENCE_RTP is enabled)
+# scikit-image for advanced image processing in fluorescence workflows
 # scikit-image==0.19.2
 
 # Note: Daheng camera support requires additional drivers
 # See: software/drivers and libraries/daheng camera/README.md
-# The gxipy module is included in the repo and doesn't need pip installation
+# The gxipy module is included in the repo (control/gxipy/) and doesn't need pip installation
