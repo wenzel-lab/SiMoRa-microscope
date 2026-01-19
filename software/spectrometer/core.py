@@ -219,7 +219,12 @@ class StreamHandler(QObject):
             # self.image_to_display.emit(cv2.resize(image_cropped,(round(self.crop_width*self.display_resolution_scaling), round(self.crop_height*self.display_resolution_scaling)),cv2.INTER_LINEAR))
             self.image_to_display.emit(image_with_ROIbox)
             # self.image_to_display.emit(image_cropped)
-            self.image_to_spectrum_extraction.emit(np.squeeze(camera.current_frame))
+            # Emit image for spectrum extraction with error handling
+            try:
+                frame_for_spectrum = np.squeeze(camera.current_frame)
+                self.image_to_spectrum_extraction.emit(frame_for_spectrum)
+            except Exception as e:
+                print(f"Warning [{self.__class__.__name__}]: Failed to emit image for spectrum extraction: {e}")
             self.timestamp_last_display = time_now
 
         # send image to write
@@ -348,10 +353,15 @@ class SpectrumROIManager(QObject):
     ROI_coordinates = Signal(np.ndarray)
     ROI_parameters = Signal(int,int)
 
-    def __init__(self,spectrumExtractor):
+    def __init__(self,spectrumExtractor, camera=None):
         QObject.__init__(self)
         self.spectrumExtractor = spectrumExtractor
-        self.image_shape = (1080,1920)
+        self.camera = camera
+        # Initialize with default shape, will be updated from camera if available
+        if camera is not None and hasattr(camera, 'Height') and hasattr(camera, 'Width'):
+            self.image_shape = (camera.Height, camera.Width)
+        else:
+            self.image_shape = (1080,1920)
         self.x0 = 0
         self.x1 = 1919
         self.y0 = None
@@ -359,13 +369,20 @@ class SpectrumROIManager(QObject):
         self.w = None
         self.manual_update_ROI(SPECTRUM_CAMERA_CROP_Y,SPECTRUM_CAMERA_CROP_Y,CROP_SPECTRUM_IMAGE_HALF_WIDTH*2)
 
+    def update_image_shape(self, height, width):
+        """Update image shape from actual camera dimensions."""
+        self.image_shape = (height, width)
+        # Recreate mask with new dimensions if ROI is already set
+        if self.y0 is not None and self.w is not None:
+            self.manual_update_ROI(self.y0, self.y1, self.w)
+
     def manual_update_ROI(self, y0_input, y1_input, w):
         # set mask for spectrum extraction and ROI bounding box for display
         if SPECTRUM_NO_TILT:
             self.ROI_parameters.emit(y0_input,w)
             mask = np.zeros(self.image_shape, np.uint8)
             y_min = max(0, y0_input - w//2)
-            y_max = min(mask.shape[0], y0_input + 2//2)
+            y_max = min(mask.shape[0], y0_input + w//2)  # Fixed bug: was 2//2, now w//2
             mask[y_min:y_max,:] = 1
         else:
             self.ROI_coordinates.emit(np.array([self.x0, y0_input, self.x1, y1_input]))
@@ -415,16 +432,35 @@ class SpectrumExtractor(QObject):
         dimensions = raw_image.shape
         width = dimensions[1]
         height = dimensions[0]
-        final_matrix = (self.mask * raw_image)
+        
+        # Handle shape mismatch: resize mask to match image if needed
+        if raw_image.shape != self.mask.shape:
+            # Resize mask to match image dimensions
+            if len(self.mask.shape) == 2 and len(raw_image.shape) == 2:
+                mask_resized = cv2.resize(self.mask, (width, height), interpolation=cv2.INTER_NEAREST)
+            else:
+                # Fallback: create a simple mask if shapes are incompatible
+                mask_resized = np.ones((height, width), np.uint8)
+        else:
+            mask_resized = self.mask
+        
+        final_matrix = (mask_resized * raw_image)
         spectrum = np.sum(final_matrix, axis=0)[::-1]
         x = np.linspace(0, width - 1, num=width)
         wavenumber = self.c[0] * x ** 4 + self.c[1] * x ** 3 + self.c[2] * x ** 2 + self.c[3] * x + self.c[4]
         return wavenumber, spectrum
 
     def extract_and_display_the_spectrum(self,raw_image):
-        wavenumber, spectrum = self.extract_spectrum(raw_image)
-        self.packet_spectrum.emit(wavenumber, spectrum)
-        return wavenumber, spectrum
+        try:
+            wavenumber, spectrum = self.extract_spectrum(raw_image)
+            self.packet_spectrum.emit(wavenumber, spectrum)
+            return wavenumber, spectrum
+        except Exception as e:
+            # Log error but don't crash - allows other operations to continue
+            print(f"Error [{self.__class__.__name__}]: Spectrum extraction failed: {e}")
+            import traceback
+            traceback.print_exc()
+            return None, None
 
 class ImageSaver_Tracking(QObject):
     def __init__(self,base_path,image_format='bmp'):

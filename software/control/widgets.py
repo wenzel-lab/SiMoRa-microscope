@@ -19,6 +19,7 @@ import cv2
 import math
 import locale
 import time
+import numpy as np
 from datetime import datetime
 
 from control._def import *
@@ -1081,10 +1082,12 @@ class PiezoWidget(QFrame):
 
 
 class RecordingWidget(QFrame):
-    def __init__(self, streamHandler, imageSaver, main=None, *args, **kwargs):
+    def __init__(self, streamHandler, imageSaver, extra_actions=None, main=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.imageSaver = imageSaver # for saving path control
         self.streamHandler = streamHandler
+        self.extra_actions = extra_actions or []
+        self.status_label = None
         self.base_path_is_set = False
         self.add_components()
         self.setFrameStyle(QFrame.Panel | QFrame.Raised)
@@ -1141,6 +1144,18 @@ class RecordingWidget(QFrame):
         self.grid.addLayout(grid_line1,0,0)
         self.grid.addLayout(grid_line2,1,0)
         self.grid.addLayout(grid_line3,2,0)
+        if self.extra_actions:
+            grid_line4 = QHBoxLayout()
+            grid_line4.addWidget(QLabel('Quick Save'))
+            for label, callback in self.extra_actions:
+                btn = QPushButton(label)
+                btn.setMinimumHeight(26)
+                btn.clicked.connect(callback)
+                grid_line4.addWidget(btn)
+            self.status_label = QLabel("")
+            grid_line4.addWidget(self.status_label)
+            grid_line4.addStretch()
+            self.grid.addLayout(grid_line4,3,0)
         self.setLayout(self.grid)
 
         # add and display a timer - to be implemented
@@ -1182,6 +1197,10 @@ class RecordingWidget(QFrame):
         self.lineEdit_experimentID.setEnabled(True)
         self.btn_record.setChecked(False)
         self.streamHandler.stop_recording()
+
+    def set_status(self, message):
+        if self.status_label is not None:
+            self.status_label.setText(message)
         self.btn_setSavingDir.setEnabled(True)
 
 
@@ -1382,9 +1401,10 @@ class NavigationWidget(QFrame):
     def move_y_backward(self):
         self.navigationController.move_y(-self.entry_dY.value())
     def move_z_forward(self):
+        # Manual move in mm (entry is en µm). Keep non-blocking to avoid UI freeze.
         self.navigationController.move_z(self.entry_dZ.value()/1000)
     def move_z_backward(self):
-        self.navigationController.move_z(-self.entry_dZ.value()/1000) 
+        self.navigationController.move_z(-self.entry_dZ.value()/1000)
 
     def set_deltaX(self,value):
         mm_per_ustep = SCREW_PITCH_X_MM/(self.navigationController.x_microstepping*FULLSTEPS_PER_REV_X) # to implement a get_x_microstepping() in multipointController
@@ -1761,6 +1781,16 @@ class MultiPointWidget(QFrame):
         self.entry_Nt.setKeyboardTracking(False)
 
         self.list_configurations = QListWidget()
+        # Allow passing a dict of configuration managers (as done in spectrometer GUI)
+        if isinstance(self.configurationManager, dict):
+            combined_configs = []
+            for mgr in self.configurationManager.values():
+                cfgs = getattr(mgr, "configurations", [])
+                combined_configs.extend(cfgs)
+            # replace with a lightweight wrapper exposing .configurations
+            wrapper = type("ConfigWrapper", (), {})()
+            wrapper.configurations = combined_configs
+            self.configurationManager = wrapper
         for microscope_configuration in self.configurationManager.configurations:
             self.list_configurations.addItems([microscope_configuration.name])
         self.list_configurations.setSelectionMode(QAbstractItemView.MultiSelection) # ref: https://doc.qt.io/qt-5/qabstractitemview.html#SelectionMode-enum
@@ -1773,12 +1803,16 @@ class MultiPointWidget(QFrame):
         self.checkbox_genFocusMap.setChecked(False)
 
         self.checkbox_withReflectionAutofocus = QCheckBox('Reflection AF')
-        self.checkbox_withReflectionAutofocus.setChecked(MULTIPOINT_REFLECTION_AUTOFOCUS_ENABLE_BY_DEFAULT)
+        has_reflection_flag = hasattr(self.multipointController, "set_reflection_af_flag")
+        self.checkbox_withReflectionAutofocus.setChecked(MULTIPOINT_REFLECTION_AUTOFOCUS_ENABLE_BY_DEFAULT if has_reflection_flag else False)
 
         self.checkbox_stitchOutput = QCheckBox('Stitch Output')
         self.checkbox_stitchOutput.setChecked(False)
 
-        self.multipointController.set_reflection_af_flag(MULTIPOINT_REFLECTION_AUTOFOCUS_ENABLE_BY_DEFAULT)
+        if has_reflection_flag:
+            self.multipointController.set_reflection_af_flag(MULTIPOINT_REFLECTION_AUTOFOCUS_ENABLE_BY_DEFAULT)
+        else:
+            self.checkbox_withReflectionAutofocus.setEnabled(False)
 
         self.btn_startAcquisition = QPushButton('Start\n Acquisition ')
         self.btn_startAcquisition.setStyleSheet("background-color: #C2C2FF");
@@ -1848,8 +1882,12 @@ class MultiPointWidget(QFrame):
         self.entry_NZ.valueChanged.connect(self.multipointController.set_NZ)
         self.entry_Nt.valueChanged.connect(self.multipointController.set_Nt)
         self.checkbox_withAutofocus.stateChanged.connect(self.multipointController.set_af_flag)
-        self.checkbox_withReflectionAutofocus.stateChanged.connect(self.multipointController.set_reflection_af_flag)
-        self.checkbox_genFocusMap.stateChanged.connect(self.multipointController.set_gen_focus_map_flag)
+        if hasattr(self.multipointController, "set_reflection_af_flag"):
+            self.checkbox_withReflectionAutofocus.stateChanged.connect(self.multipointController.set_reflection_af_flag)
+        if hasattr(self.multipointController, "set_gen_focus_map_flag"):
+            self.checkbox_genFocusMap.stateChanged.connect(self.multipointController.set_gen_focus_map_flag)
+        else:
+            self.checkbox_genFocusMap.setEnabled(False)
         self.checkbox_stitchOutput.toggled.connect(self.display_stitcher_widget)
         self.btn_setSavingDir.clicked.connect(self.set_saving_dir)
         self.btn_startAcquisition.clicked.connect(self.toggle_acquisition)
@@ -5337,3 +5375,196 @@ class LedMatrixSettingsDialog(QDialog):
 
     def update_NA(self):
         self.led_array.set_NA(self.NA_spinbox.value())
+
+
+# ---------------------------------------------------------------------------
+# Minimal stub for brightfield controls used in spectrometer/gui.py
+# ---------------------------------------------------------------------------
+class BrightfieldWidget(QWidget):
+    """Placeholder brightfield control widget (stubbed for simulation)."""
+
+    def __init__(self, live_controller, parent=None):
+        super().__init__(parent)
+        self.live_controller = live_controller
+        self.btn_calc_spot = QPushButton("Calc spot (stub)")
+        self.btn_show_circle = QPushButton("Show circle (stub)")
+        self.btn_show_circle.setCheckable(True)
+        layout = QVBoxLayout()
+        layout.addWidget(QLabel("Brightfield controls (stubbed in this branch)"))
+        layout.addWidget(self.btn_calc_spot)
+        layout.addWidget(self.btn_show_circle)
+        self.setLayout(layout)
+
+
+# ---------------------------------------------------------------------------
+# Minimal stub for spectrum ROI manager used in spectrometer/gui.py
+# ---------------------------------------------------------------------------
+class SpectrumROIManagerWidget(QWidget):
+    """
+    Widget for managing spectrum ROI parameters.
+    Allows adjustment of ROI center Y position and ROI height (width) for averaging.
+    """
+
+    def __init__(self, spectrum_extractor, roi_manager, camera, parent=None):
+        super().__init__(parent)
+        self.spectrum_extractor = spectrum_extractor
+        self.roi_manager = roi_manager
+        self.camera = camera
+
+        self.setFrameStyle(QFrame.Panel | QFrame.Raised)
+        self.setup_ui()
+        
+        # Initialize values from ROI manager
+        if self.roi_manager.y0 is not None:
+            self.entry_roi_y.setValue(self.roi_manager.y0)
+        if self.roi_manager.w is not None:
+            self.entry_roi_height.setValue(self.roi_manager.w)
+
+    def setup_ui(self):
+        layout = QVBoxLayout()
+        layout.setContentsMargins(4, 4, 4, 4)
+        
+        # Title
+        title = QLabel("Spectrum ROI Manager")
+        title.setStyleSheet("font-weight: bold;")
+        layout.addWidget(title)
+        
+        # ROI Y position (center)
+        layout_y = QHBoxLayout()
+        layout_y.addWidget(QLabel("ROI Center Y:"))
+        self.entry_roi_y = QSpinBox()
+        self.entry_roi_y.setMinimum(0)
+        self.entry_roi_y.setMaximum(2000)  # Will be updated based on camera
+        self.entry_roi_y.setValue(540)  # Default from SPECTRUM_CAMERA_CROP_Y
+        self.entry_roi_y.setSingleStep(1)
+        self.entry_roi_y.setKeyboardTracking(False)
+        layout_y.addWidget(self.entry_roi_y)
+        layout_y.addStretch()
+        layout.addLayout(layout_y)
+        
+        # ROI height (width for averaging)
+        layout_height = QHBoxLayout()
+        layout_height.addWidget(QLabel("ROI Height (pixels):"))
+        self.entry_roi_height = QSpinBox()
+        self.entry_roi_height.setMinimum(1)
+        self.entry_roi_height.setMaximum(500)  # Reasonable max
+        self.entry_roi_height.setValue(20)  # Default from CROP_SPECTRUM_IMAGE_HALF_WIDTH*2
+        self.entry_roi_height.setSingleStep(1)
+        self.entry_roi_height.setKeyboardTracking(False)
+        layout_height.addWidget(self.entry_roi_height)
+        layout_height.addStretch()
+        layout.addLayout(layout_height)
+        
+        # Info label
+        self.label_info = QLabel("Adjust ROI height to average more rows\nfor speckle noise reduction")
+        self.label_info.setWordWrap(True)
+        self.label_info.setStyleSheet("color: gray; font-size: 9pt;")
+        layout.addWidget(self.label_info)
+        
+        # Connect signals
+        self.entry_roi_y.valueChanged.connect(self.update_roi)
+        self.entry_roi_height.valueChanged.connect(self.update_roi)
+        
+        layout.addStretch()
+        self.setLayout(layout)
+        
+        # Update max values based on camera if available
+        if hasattr(self.camera, 'Height') and hasattr(self.camera, 'Width'):
+            self.entry_roi_y.setMaximum(self.camera.Height - 1)
+
+    def update_roi(self):
+        """Update ROI when user changes values."""
+        y_center = self.entry_roi_y.value()
+        height = self.entry_roi_height.value()
+        # manual_update_ROI expects (y0, y1, w), but for non-tilt we use same y for both
+        self.roi_manager.manual_update_ROI(y_center, y_center, height)
+
+
+class SpectrumDisplayWindow(QWidget):
+    """Spectrum display window with a single updating trace."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.plotWidget = pg.PlotWidget()
+        self.plotWidget.setLabel("bottom", "Wavenumber")
+        self.plotWidget.setLabel("left", "Intensity")
+        self.curve = self.plotWidget.plot([], [])
+
+        self._last_x = None
+        self._last_y = None
+        self._background = None
+        self._subtract_enabled = False
+
+        self.btn_save_background = QPushButton("Save background")
+        self.btn_toggle_subtract = QPushButton("Enable subtraction")
+        self.btn_toggle_subtract.setCheckable(True)
+        self.btn_disable_subtract = QPushButton("Disable subtraction")
+        self.label_background = QLabel("Background: not set")
+        self.btn_save_background.setMinimumHeight(26)
+        self.btn_toggle_subtract.setMinimumHeight(26)
+        self.btn_disable_subtract.setMinimumHeight(26)
+
+        self.btn_save_background.clicked.connect(self._save_background)
+        self.btn_toggle_subtract.toggled.connect(self._set_subtraction_enabled)
+        self.btn_disable_subtract.clicked.connect(self._disable_subtraction)
+
+        layout = QVBoxLayout()
+        layout.setContentsMargins(4, 4, 4, 4)
+        layout.addWidget(self.plotWidget, 1)
+        button_row = QHBoxLayout()
+        button_row.addWidget(self.btn_save_background)
+        button_row.addWidget(self.btn_toggle_subtract)
+        button_row.addWidget(self.btn_disable_subtract)
+        button_row.addWidget(self.label_background)
+        button_row.addStretch()
+        layout.addLayout(button_row, 0)
+        self.setLayout(layout)
+
+    def update_spectrum(self, x, y):
+        if x is None or y is None:
+            return
+        self._last_x = x
+        self._last_y = y
+
+        spectrum = self.get_display_spectrum()
+        if spectrum is None:
+            return
+        x_plot, y_plot = spectrum
+        self.curve.setData(x_plot, y_plot)
+
+    def _save_background(self):
+        if self._last_y is None:
+            self.label_background.setText("Background: no data")
+            return
+        self._background = self._last_y.copy()
+        self._update_background_label()
+
+    def _set_subtraction_enabled(self, enabled):
+        self._subtract_enabled = enabled
+        self._update_background_label()
+
+    def _disable_subtraction(self):
+        self.btn_toggle_subtract.setChecked(False)
+
+    def get_display_spectrum(self):
+        if self._last_x is None or self._last_y is None:
+            return None
+        y_plot = self._last_y
+        if self._subtract_enabled and self._background is not None:
+            if len(self._background) == len(self._last_y):
+                y_plot = np.maximum(self._last_y - self._background, 0)
+            else:
+                self.label_background.setText("Background: size mismatch")
+        return self._last_x, y_plot
+
+    def _set_status(self, message):
+        # Status is handled in the recording widget; keep this as a no-op.
+        pass
+
+    def _update_background_label(self):
+        if self._background is None:
+            self.label_background.setText("Background: not set")
+        elif self._subtract_enabled:
+            self.label_background.setText("Background: active")
+        else:
+            self.label_background.setText("Background: saved")

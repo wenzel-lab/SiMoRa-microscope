@@ -573,6 +573,9 @@ class LiveController(QObject):
         self.is_live = True
         self.camera.is_live = True
         self.camera.start_streaming()
+        if self.trigger_mode == TriggerMode.CONTINUOUS:
+            if hasattr(self.camera, 'enable_callback'):
+                self.camera.enable_callback()
         if self.trigger_mode == TriggerMode.SOFTWARE or ( self.trigger_mode == TriggerMode.HARDWARE and self.use_internal_timer_for_hardware_trigger ):
             self.camera.enable_callback() # in case it's disabled e.g. by the laser AF controller
             self._start_triggerred_acquisition()
@@ -3308,6 +3311,7 @@ class ImageDisplayWindow(QMainWindow):
         self.centroid = None
         self.DrawCrossHairs = False
         self.image_offset = np.array([0, 0])
+        self.last_image = None
 
         # ## flag of setting scaling level 
         # self.flag_image_scaling_level_init = False
@@ -3379,6 +3383,7 @@ class ImageDisplayWindow(QMainWindow):
         else:
             self.graphics_widget.img.setImage(image,autoLevels=self.autoLevels)
             # set_autoLevels_value()
+        self.last_image = image
 
     def update_ROI(self):
         self.roi_pos = self.ROI.pos()

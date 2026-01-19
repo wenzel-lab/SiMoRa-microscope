@@ -17,6 +17,10 @@ if str(SOFTWARE_DIR) not in sys.path:
     sys.path.insert(0, str(SOFTWARE_DIR))
 
 import time
+import os
+from datetime import datetime
+import cv2
+import numpy as np
 
 # app specific libraries
 import control.widgets as widgets
@@ -31,8 +35,13 @@ from control._def import *
 
 SINGLE_WINDOW = True # set to False if use separate windows for display and control
 DEFAULT_DISPLAY_CROP = 100
+AUTO_MOVE_ON_STARTUP = False  # disable homing/moves on GUI start
 
 MAIN_CAMERA_MODEL = ''
+
+# configuration files (keep them inside the repo to avoid home write perms)
+CONFIG_DIR = SOFTWARE_DIR / "configurations"
+CONFIG_DIR.mkdir(exist_ok=True)
 
 class OctopiGUI(QMainWindow):
 
@@ -59,8 +68,8 @@ class OctopiGUI(QMainWindow):
 		
 		self.streamHandler_spectrum = core.StreamHandler(is_for_spectrum_camera=True)
 		self.objectiveStore = core.ObjectiveStore(parent=self)
-		self.configurationManager_spectrum = core.ConfigurationManager(str(Path.home()) + "/configurations_spectrometer_spectrum.xml",channel='Spectrum')
-		self.configurationManager_widefield = core.ConfigurationManager(str(Path.home()) + "/configurations_spectrometer_widefield.xml",channel='Widefield')
+		self.configurationManager_spectrum = core.ConfigurationManager(str(CONFIG_DIR / "configurations_spectrometer_spectrum.xml"),channel='Spectrum')
+		self.configurationManager_widefield = core.ConfigurationManager(str(CONFIG_DIR / "configurations_spectrometer_widefield.xml"),channel='Widefield')
 		self.liveController_spectrum = core.LiveController(self.camera_spectrometer,self.microcontroller,self.configurationManager_spectrum)
 		self.imageSaver = core.ImageSaver()
 		self.imageDisplay = core.ImageDisplay()
@@ -71,7 +80,9 @@ class OctopiGUI(QMainWindow):
 		self.imageDisplay_widefield = core.ImageDisplay()
 
 		self.spectrumExtractor = core.SpectrumExtractor()
-		self.spectrumROIManager = core.SpectrumROIManager(self.spectrumExtractor)
+		# Pass camera to ROI manager so it can get initial dimensions
+		# Will be updated after camera opens
+		self.spectrumROIManager = core.SpectrumROIManager(self.spectrumExtractor, self.camera_spectrometer)
 		
 		self.navigationController = core.NavigationController(self.microcontroller, self.objectiveStore, parent=self)
 		self.autofocusController = core.AutoFocusController(self.camera_widefield,self.navigationController,self.liveController_widefield)
@@ -93,7 +104,14 @@ class OctopiGUI(QMainWindow):
 		# open the camera
 		# camera start streaming
 		self.camera_spectrometer.open()
-		self.camera_spectrometer.set_software_triggered_acquisition()
+		# Update ROI manager with actual camera dimensions
+		if hasattr(self.camera_spectrometer, 'Height') and hasattr(self.camera_spectrometer, 'Width'):
+			self.spectrumROIManager.update_image_shape(self.camera_spectrometer.Height, self.camera_spectrometer.Width)
+		# Use continuous acquisition for the spectrometer camera so it does not
+		# depend on software trigger timing.
+		self.camera_spectrometer.set_continuous_acquisition()
+		self.camera_spectrometer.set_pixel_format("MONO16")
+		self.liveController_spectrum.trigger_mode = TriggerMode.CONTINUOUS
 		self.camera_spectrometer.set_callback(self.streamHandler_spectrum.on_new_frame)
 		self.camera_spectrometer.enable_callback()
 
@@ -105,7 +123,14 @@ class OctopiGUI(QMainWindow):
 		# load widgets
 		self.cameraSettingWidget_spectrum = widgets.CameraSettingsWidget(self.camera_spectrometer,include_gain_exposure_time=False)
 		self.liveControlWidget_spectrum = widgets.LiveControlWidget(self.streamHandler_spectrum,self.liveController_spectrum,self.configurationManager_spectrum,show_display_options=False)
-		self.recordingControlWidget_spectrum = widgets.RecordingWidget(self.streamHandler_spectrum,self.imageSaver)
+		self.recordingControlWidget_spectrum = widgets.RecordingWidget(
+			self.streamHandler_spectrum,
+			self.imageSaver,
+			extra_actions=[
+				("Save spectrum", self.save_spectrum_only),
+				("Save spectrum + widefield", self.save_spectrum_and_widefield),
+			],
+		)
 
 		self.cameraSettingWidget_widefield = widgets.CameraSettingsWidget(self.camera_widefield,include_gain_exposure_time=False)
 		self.liveControlWidget_widefield = widgets.LiveControlWidget(self.streamHandler_widefield,self.liveController_widefield,self.configurationManager_widefield,show_display_options=False)
@@ -179,7 +204,7 @@ class OctopiGUI(QMainWindow):
 
 		dock_spectrumDisplay = dock.Dock('Extracted Spectrum', autoOrientation = False)
 		dock_spectrumDisplay.showTitleBar()
-		dock_spectrumDisplay.addWidget(self.spectrumDisplayWindow.plotWidget)
+		dock_spectrumDisplay.addWidget(self.spectrumDisplayWindow)
 		dock_spectrumDisplay.setStretch(x=5,y=1)
 
 		display_dockArea = dock.DockArea()
@@ -220,7 +245,7 @@ class OctopiGUI(QMainWindow):
 		self.streamHandler_spectrum.image_to_spectrum_extraction.connect(self.spectrumExtractor.extract_and_display_the_spectrum)
 		# self.multipointController.image_to_spectrum_extraction.connect(self.spectrumExtractor.extract_and_display_the_spectrum)
 		self.multipointController.image_to_spectrum_extraction.connect(self.imageDisplayWindow_spectrum.display_image)
-		self.spectrumExtractor.packet_spectrum.connect(self.spectrumDisplayWindow.plotWidget.plot)
+		self.spectrumExtractor.packet_spectrum.connect(self.spectrumDisplayWindow.update_spectrum)
 
 		self.streamHandler_widefield.signal_new_frame_received.connect(self.liveController_widefield.on_new_frame)
 		self.streamHandler_widefield.image_to_display.connect(self.imageDisplay_widefield.enqueue)
@@ -256,25 +281,25 @@ class OctopiGUI(QMainWindow):
 		self.slidePositionController.signal_slide_scanning_position_reached.connect(self.multiPointWidget.enable_the_start_aquisition_button)
 		# self.slidePositionController.signal_clear_slide.connect(self.navigationViewer.clear_slide)
 
-		# reset the MCU
-		self.microcontroller.reset()
+		# Avoid reconfiguring the MCU on startup; it can lock Z on some setups.
+		self.log.info("Skipping MCU reset/driver init on GUI start")
 
-		# reinitialize motor drivers and DAC (in particular for V2.1 driver board where PG is not functional)
-		self.microcontroller.initialize_drivers()
-
-		# configure the actuators
-		self.microcontroller.configure_actuators()
-
-		# retract the objective
-		self.navigationController.home_z()
-		# wait for the operation to finish
-		t0 = time.time()
-		while self.microcontroller.is_busy():
-			time.sleep(0.005)
-			if time.time() - t0 > 10:
-				self.log.error('z homing timeout, the program will exit')
-				sys.exit(1)
-		self.log.info('objective retracted')
+		# retract the objective (skip if homing for Z is disabled)
+		if AUTO_MOVE_ON_STARTUP:
+			if HOMING_ENABLED_Z:
+				self.navigationController.home_z()
+				# wait for the operation to finish
+				t0 = time.time()
+				while self.microcontroller.is_busy():
+					time.sleep(0.005)
+					if time.time() - t0 > 10:
+						self.log.error('z homing timeout, the program will exit')
+						sys.exit(1)
+				self.log.info('objective retracted')
+			else:
+				self.log.info('Z homing disabled by configuration; skipping objective retract')
+		else:
+			self.log.info('Startup moves disabled; skipping objective retract')
 
 		# set encoder arguments
 		# set axis pid control enable
@@ -295,19 +320,22 @@ class OctopiGUI(QMainWindow):
 		time.sleep(0.5)
 
 		# homing, set zero and set software limit
-		self.navigationController.set_x_limit_pos_mm(100)
-		self.navigationController.set_x_limit_neg_mm(-100)
-		self.navigationController.set_y_limit_pos_mm(100)
-		self.navigationController.set_y_limit_neg_mm(-100)
-		self.log.info("start homing")
-		self.slidePositionController.move_to_slide_scanning_position()
-		while self.slidePositionController.slide_scanning_position_reached == False:
-			time.sleep(0.005)
-		self.log.info("homing finished")
-		self.navigationController.set_x_limit_pos_mm(SOFTWARE_POS_LIMIT.X_POSITIVE)
-		self.navigationController.set_x_limit_neg_mm(SOFTWARE_POS_LIMIT.X_NEGATIVE)
-		self.navigationController.set_y_limit_pos_mm(SOFTWARE_POS_LIMIT.Y_POSITIVE)
-		self.navigationController.set_y_limit_neg_mm(SOFTWARE_POS_LIMIT.Y_NEGATIVE)
+		if AUTO_MOVE_ON_STARTUP:
+			self.navigationController.set_x_limit_pos_mm(100)
+			self.navigationController.set_x_limit_neg_mm(-100)
+			self.navigationController.set_y_limit_pos_mm(100)
+			self.navigationController.set_y_limit_neg_mm(-100)
+			self.log.info("start homing")
+			self.slidePositionController.move_to_slide_scanning_position()
+			while self.slidePositionController.slide_scanning_position_reached == False:
+				time.sleep(0.005)
+			self.log.info("homing finished")
+			self.navigationController.set_x_limit_pos_mm(SOFTWARE_POS_LIMIT.X_POSITIVE)
+			self.navigationController.set_x_limit_neg_mm(SOFTWARE_POS_LIMIT.X_NEGATIVE)
+			self.navigationController.set_y_limit_pos_mm(SOFTWARE_POS_LIMIT.Y_POSITIVE)
+			self.navigationController.set_y_limit_neg_mm(SOFTWARE_POS_LIMIT.Y_NEGATIVE)
+		else:
+			self.log.info("Startup moves disabled; skipping homing/slide move")
 
 		# set output's gains
 		div = 1 if OUTPUT_GAINS.REFDIV is True else 0
@@ -330,12 +358,19 @@ class OctopiGUI(QMainWindow):
 		self.navigationController.set_x_limit_neg_mm(SOFTWARE_POS_LIMIT.X_NEGATIVE)
 		self.navigationController.set_y_limit_pos_mm(SOFTWARE_POS_LIMIT.Y_POSITIVE)
 		self.navigationController.set_y_limit_neg_mm(SOFTWARE_POS_LIMIT.Y_NEGATIVE)
-		self.navigationController.set_z_limit_pos_mm(SOFTWARE_POS_LIMIT.Z_POSITIVE)
+		if HOMING_ENABLED_Z:
+			self.navigationController.set_z_limit_pos_mm(SOFTWARE_POS_LIMIT.Z_POSITIVE)
+			self.navigationController.set_z_limit_neg_mm(SOFTWARE_POS_LIMIT.Z_NEGATIVE)
+		else:
+			self.log.info("Z homing disabled; skipping Z software limits to allow manual movement")
 
 		# Move to cached position
-		if HOMING_ENABLED_X and HOMING_ENABLED_Y and HOMING_ENABLED_Z:
-			self.navigationController.move_to_cached_position()
-			self.waitForMicrocontroller()
+		if AUTO_MOVE_ON_STARTUP:
+			if HOMING_ENABLED_X and HOMING_ENABLED_Y and HOMING_ENABLED_Z:
+				self.navigationController.move_to_cached_position()
+				self.waitForMicrocontroller()
+		else:
+			self.log.info("Startup moves disabled; skipping move to cached position")
 
 	def update_the_current_tab(self,idx):
 		print('current tab is ' + self.controlTabWidget.tabText(idx))
@@ -349,6 +384,91 @@ class OctopiGUI(QMainWindow):
 		self.controlTabWidget.setCurrentWidget(self.controlTabWidget.findChild(QWidget,channel))
 		QApplication.processEvents()
 		# to be fixed - the above has not effect on the display
+
+	def save_spectrum_and_widefield(self):
+		self.recordingControlWidget_spectrum.set_status("Saving...")
+		try:
+			spectrum = self.spectrumDisplayWindow.get_display_spectrum()
+			if spectrum is None:
+				self.recordingControlWidget_spectrum.set_status("No spectrum data")
+				return
+			image = self._get_widefield_image_for_save()
+			if image is None:
+				self.recordingControlWidget_spectrum.set_status("No widefield image")
+				return
+			save_dir = self._resolve_save_dir()
+			ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+			pair_dir = os.path.join(save_dir, f"spectrum_pair_{ts}")
+			os.makedirs(pair_dir, exist_ok=True)
+			spectrum_name = os.path.join(pair_dir, "spectrum.csv")
+			image_name = os.path.join(pair_dir, "widefield.tiff")
+			x, y = spectrum
+			np.savetxt(spectrum_name, np.vstack((x, y)), delimiter=",")
+			image_to_save = image
+			if self.camera_widefield.is_color and image.ndim == 3:
+				image_to_save = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+			cv2.imwrite(image_name, image_to_save)
+			self.recordingControlWidget_spectrum.set_status(f"Saved in {pair_dir}")
+		except Exception as exc:
+			self.recordingControlWidget_spectrum.set_status(f"Save failed: {exc}")
+
+	def save_spectrum_only(self):
+		spectrum = self.spectrumDisplayWindow.get_display_spectrum()
+		if spectrum is None:
+			self.recordingControlWidget_spectrum.set_status("No spectrum data")
+			return
+		save_dir = self._resolve_save_dir()
+		ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+		spectrum_name = os.path.join(save_dir, f"spectrum_{ts}.csv")
+		try:
+			x, y = spectrum
+			np.savetxt(spectrum_name, np.vstack((x, y)), delimiter=",")
+			self.recordingControlWidget_spectrum.set_status(f"Saved in {save_dir}")
+		except Exception:
+			self.recordingControlWidget_spectrum.set_status("Save failed")
+
+	def _resolve_save_dir(self):
+		base_path = self.recordingControlWidget_spectrum.lineEdit_savingDir.text().strip()
+		if not base_path or base_path == "Choose a base saving directory":
+			base_path = getattr(self.imageSaver, "base_path", None) or DEFAULT_SAVING_PATH
+		experiment_id = getattr(self.imageSaver, "experiment_ID", "")
+		if experiment_id:
+			save_dir = os.path.join(base_path, experiment_id)
+		else:
+			manual_id = self.recordingControlWidget_spectrum.lineEdit_experimentID.text().strip()
+			if manual_id:
+				save_dir = os.path.join(base_path, manual_id)
+			else:
+				save_dir = os.path.join(base_path, "manual_spectrum")
+		os.makedirs(save_dir, exist_ok=True)
+		return save_dir
+
+	def _get_widefield_image_for_save(self):
+		image = getattr(self.imageDisplayWindow_widefield, "last_image", None)
+		if image is not None:
+			return image
+		image = getattr(self.camera_widefield, "current_frame", None)
+		if image is not None:
+			return image
+		# Fallback: grab a single frame if live is not running.
+		started_streaming = False
+		try:
+			was_streaming = getattr(self.camera_widefield, "is_streaming", False)
+			if not was_streaming:
+				self.camera_widefield.start_streaming()
+				started_streaming = True
+			for _ in range(3):
+				self.camera_widefield.send_trigger()
+				image = self.camera_widefield.read_frame()
+				if image is not None:
+					break
+				time.sleep(0.05)
+		except Exception:
+			image = None
+		finally:
+			if started_streaming:
+				self.camera_widefield.stop_streaming()
+		return image
 		# self.liveControlWidgets[channel].update_DACs()
 		print('set the current tab to ' + channel)
 
@@ -372,8 +492,15 @@ class OctopiGUI(QMainWindow):
 		if SINGLE_WINDOW == False:
 			self.displayWindow.close()
 
+		# Ensure lasers/LEDs off and leave the MCU in a clean state.
 		self.microcontroller.analog_write_onboard_DAC(0,0)
 		self.microcontroller.analog_write_onboard_DAC(1,0)
+		try:
+			self.microcontroller.reset()
+			# give the MCU a moment to settle
+			time.sleep(0.1)
+		except Exception:
+			pass
 		self.microcontroller.close()
 
 	def waitForMicrocontroller(self, timeout=5.0, error_message=None):

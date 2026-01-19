@@ -128,9 +128,11 @@ class Microcontroller:
         self.last_command = None
         self.last_command_send_timestamp = time.time()
         self.last_command_aborted_error = None
+        self.last_command_timestamp = time.time()
 
         self.crc_calculator = CrcCalculator(Crc8.CCITT,table_based=True)
         self.retry = 0
+        self.timeout_counter = 0
 
         self.log.debug("connecting to controller based on " + version)
 
@@ -146,7 +148,17 @@ class Microcontroller:
                     if sys.platform == 'win32':
                         controller_ports = [ p.device for p in serial.tools.list_ports.comports() if p.manufacturer == 'Microsoft']
                     else:
+                        # Prefer explicit manufacturer
                         controller_ports = [ p.device for p in serial.tools.list_ports.comports() if p.manufacturer == 'Teensyduino']
+                        # Fallback: first available ACM/USB
+                        if not controller_ports:
+                            controller_ports = [ p.device for p in serial.tools.list_ports.comports() if p.device.startswith('/dev/ttyACM') or p.device.startswith('/dev/ttyUSB') ]
+                            if controller_ports:
+                                self.log.warning("Teensy manufacturer not reported; using fallback port %s", controller_ports[0])
+                        # If still nothing, last resort: try /dev/ttyACM0
+                        if not controller_ports and os.path.exists('/dev/ttyACM0'):
+                            controller_ports = ['/dev/ttyACM0']
+                            self.log.warning("Using hardcoded fallback /dev/ttyACM0")
 
             if not controller_ports:
                 raise IOError("no controller found")
@@ -641,6 +653,9 @@ class Microcontroller:
         self.send_command(cmd)
 
     def configure_actuators(self):
+        # Always configure Z motion parameters so manual moves work,
+        # but only apply Z homing/limit polarity when homing is enabled.
+        configure_z_homing = HOMING_ENABLED_Z
         # lead screw pitch
         self.set_leadscrew_pitch(AXIS.X,SCREW_PITCH_X_MM)
         self.wait_till_operation_is_completed()
@@ -667,15 +682,17 @@ class Microcontroller:
         self.wait_till_operation_is_completed()
         self.set_limit_switch_polarity(AXIS.Y,Y_HOME_SWITCH_POLARITY)
         self.wait_till_operation_is_completed()
-        self.set_limit_switch_polarity(AXIS.Z,Z_HOME_SWITCH_POLARITY)
-        self.wait_till_operation_is_completed()
+        if configure_z_homing:
+            self.set_limit_switch_polarity(AXIS.Z,Z_HOME_SWITCH_POLARITY)
+            self.wait_till_operation_is_completed()
         # home safety margin
         self.set_home_safety_margin(AXIS.X, int(X_HOME_SAFETY_MARGIN_UM))
         self.wait_till_operation_is_completed()
         self.set_home_safety_margin(AXIS.Y, int(Y_HOME_SAFETY_MARGIN_UM))
         self.wait_till_operation_is_completed()
-        self.set_home_safety_margin(AXIS.Z, int(Z_HOME_SAFETY_MARGIN_UM))
-        self.wait_till_operation_is_completed()
+        if configure_z_homing:
+            self.set_home_safety_margin(AXIS.Z, int(Z_HOME_SAFETY_MARGIN_UM))
+            self.wait_till_operation_is_completed()
 
     def ack_joystick_button_pressed(self):
         cmd = bytearray(self.tx_buffer_length)
@@ -715,6 +732,19 @@ class Microcontroller:
         self.log.debug("set_axis_enable_disable ignored for Teensy firmware (axis=%s, status=%s)", axis, status)
 
     def send_command(self,command):
+        # Check if port is open before writing
+        if not hasattr(self, 'serial') or self.serial is None:
+            self.log.error("Serial port not initialized")
+            raise RuntimeError("Serial port not initialized")
+        if not self.serial.is_open:
+            self.log.error("Serial port not open, attempting to reopen...")
+            try:
+                self.serial.open()
+                self.log.info("Serial port reopened successfully")
+            except Exception as e:
+                self.log.error(f"Failed to reopen serial port: {e}")
+                raise RuntimeError(f"Serial port not open and could not be reopened: {e}")
+        
         self._cmd_id = (self._cmd_id + 1)%256
         command[0] = self._cmd_id
         command[-1] = self.crc_calculator.calculate_checksum(command[:-1])
@@ -722,6 +752,8 @@ class Microcontroller:
         self.mcu_cmd_execution_in_progress = True
         self.last_command = command
         self.last_command_send_timestamp = time.time()
+        # keep backward-compatible timestamp name used in read_received_packet
+        self.last_command_timestamp = self.last_command_send_timestamp
         self.retry = 0
 
         if self.last_command_aborted_error is not None:
@@ -740,6 +772,11 @@ class Microcontroller:
 
     def resend_last_command(self):
         if self.last_command is not None:
+            # Check if port is open before writing
+            if not hasattr(self, 'serial') or self.serial is None or not self.serial.is_open:
+                self.log.error("Serial port not open, cannot resend command")
+                self.abort_current_command("Serial port not open")
+                return
             self.serial.write(self.last_command)
             self.mcu_cmd_execution_in_progress = True
             self.last_command_send_timestamp = time.time()
@@ -752,8 +789,11 @@ class Microcontroller:
         while self.terminate_reading_received_packet_thread == False:
             # wait to receive data
             if self.serial.in_waiting==0:
+                time.sleep(0.001)
                 continue
             if self.serial.in_waiting % self.rx_buffer_length != 0:
+                # give the MCU a moment to finish sending the packet
+                time.sleep(0.001)
                 continue
             
             # get rid of old data
