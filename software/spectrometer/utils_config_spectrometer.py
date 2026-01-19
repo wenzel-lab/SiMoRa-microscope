@@ -10,8 +10,9 @@ def generate_default_configuration(filename,channel=None):
         mode_1.set('Name','View Sample')
         mode_1.set('ExposureTime','3')
         mode_1.set('AnalogGain','0')
-        mode_1.set('IlluminationSource','11')
-        mode_1.set('IlluminationIntensity','10')
+        # Use brightfield LED (LED matrix full) at full power
+        mode_1.set('IlluminationSource','0')
+        mode_1.set('IlluminationIntensity','100')
         mode_1.set('CameraSN','')
         mode_1.set('Channel','Widefield')
         mode_1.set('DAC_Laser','0')
@@ -36,8 +37,9 @@ def generate_default_configuration(filename,channel=None):
         mode_3.set('Name','View Sample + Laser Spot')
         mode_3.set('ExposureTime','3')
         mode_3.set('AnalogGain','0')
-        mode_3.set('IlluminationSource','11')
-        mode_3.set('IlluminationIntensity','10')
+        # Brightfield LED for sample + laser preview
+        mode_3.set('IlluminationSource','0')
+        mode_3.set('IlluminationIntensity','100')
         mode_3.set('CameraSN','')
         mode_3.set('Channel','Widefield')
         mode_3.set('DAC_Laser','60')
