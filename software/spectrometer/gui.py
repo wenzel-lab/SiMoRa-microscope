@@ -62,6 +62,8 @@ class OctopiGUI(QMainWindow):
 			self.camera_spectrometer = camera_spectrometer.Camera()
 			self.camera_widefield = camera.Camera(rotate_image_angle=ROTATE_IMAGE_ANGLE,flip_image=FLIP_IMAGE)
 			self.microcontroller = microcontroller.Microcontroller(version='Teensy')
+			# IDS spectrometer camera only supports Bayer on this setup.
+			self.camera_spectrometer.pixel_format = "BAYER_RG8"
 
 		# configure the actuators
 		self.microcontroller.configure_actuators()
@@ -110,7 +112,7 @@ class OctopiGUI(QMainWindow):
 		# Use continuous acquisition for the spectrometer camera so it does not
 		# depend on software trigger timing.
 		self.camera_spectrometer.set_continuous_acquisition()
-		self.camera_spectrometer.set_pixel_format("MONO16")
+		self.camera_spectrometer.set_pixel_format("BAYER_RG8")
 		self.liveController_spectrum.trigger_mode = TriggerMode.CONTINUOUS
 		self.camera_spectrometer.set_callback(self.streamHandler_spectrum.on_new_frame)
 		self.camera_spectrometer.enable_callback()
@@ -184,6 +186,7 @@ class OctopiGUI(QMainWindow):
 
 		# load window
 		self.imageDisplayWindow_spectrum = core.ImageDisplayWindow()
+		self.imageDisplayWindow_spectrum.autoLevels = True
 		# self.imageDisplayWindow_spectrum.show()
 		self.imageDisplayWindow_widefield = core.ImageDisplayWindow()
 		# self.imageDisplayWindow_widefield.show()

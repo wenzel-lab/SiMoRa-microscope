@@ -5399,7 +5399,7 @@ class BrightfieldWidget(QWidget):
 # ---------------------------------------------------------------------------
 # Minimal stub for spectrum ROI manager used in spectrometer/gui.py
 # ---------------------------------------------------------------------------
-class SpectrumROIManagerWidget(QWidget):
+class SpectrumROIManagerWidget(QFrame):
     """
     Widget for managing spectrum ROI parameters.
     Allows adjustment of ROI center Y position and ROI height (width) for averaging.

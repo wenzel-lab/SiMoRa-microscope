@@ -2409,14 +2409,11 @@ class ImageDisplayWindow(QMainWindow):
 
         self.graphics_widget.img.setImage(image, autoLevels=self.autoLevels)
 
-        if self.autoLevels == False:
-            if self.show_LUT:
-                if self.is_first_frame:
-                    self.LUTWidget.setLevels(min_val, max_val)
-                    self.LUTWidget.setHistogramRange(info.min, info.max)
-                    self.is_first_frame = False
-        else:
-            self.graphics_widget.img.setLevels((min_val, max_val))
+        if not self.autoLevels and self.show_LUT:
+            if self.is_first_frame:
+                self.LUTWidget.setLevels(min_val, max_val)
+                self.LUTWidget.setHistogramRange(info.min, info.max)
+                self.is_first_frame = False
 
         self.graphics_widget.img.updateImage()
        
