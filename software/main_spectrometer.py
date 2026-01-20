@@ -44,11 +44,20 @@ def main():
     parser.add_argument("--simulation", help="Run the GUI with simulated image streams.", action="store_true")
     args = parser.parse_args()
 
-    app = QApplication([])
-    app.setStyle("Fusion")
-    win = gui.OctopiGUI(is_simulation=args.simulation)
-    win.show()
-    sys.exit(app.exec_())
+    try:
+        app = QApplication([])
+        app.setStyle("Fusion")
+        win = gui.OctopiGUI(is_simulation=args.simulation)
+        win.show()
+        sys.exit(app.exec_())
+    except OSError as e:
+        if "no controller found" in str(e).lower():
+            print("\nERROR: Microcontroller (Teensy) not found!")
+            print("Please check that the Teensy is connected via USB.")
+            print("To test without hardware, use: python3 main_spectrometer.py --simulation\n")
+        raise
+    except Exception as e:
+        raise
 
 
 if __name__ == "__main__":
