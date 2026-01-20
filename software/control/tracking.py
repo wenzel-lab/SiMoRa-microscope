@@ -5,16 +5,16 @@ from os.path import realpath, dirname, join
 try:
 	import torch
 	from control.DaSiamRPN.code.net import SiamRPNvot
-	print(1)
 	from control.DaSiamRPN.code import vot
-	print(2) 
 	from control.DaSiamRPN.code.utils import get_axis_aligned_bbox, cxy_wh_2_rect
-	print(3)
 	from control.DaSiamRPN.code.run_SiamRPN import SiamRPN_init, SiamRPN_track
-	print(4)
+	TORCH_AVAILABLE = True
+except (ImportError, ModuleNotFoundError) as e:
+	TORCH_AVAILABLE = False
+	# DaSiamRPN tracking is not available (torch not installed)
 except Exception as e:
-	print(e)
-	# print('Warning: DaSiamRPN is not available!')
+	TORCH_AVAILABLE = False
+	# Other error loading DaSiamRPN
 from control._def import Tracking
 import cv2
 
@@ -47,16 +47,20 @@ class Tracker_Image(object):
 		
 		# Neural Net based trackers
 		self.NEURALNETTRACKERS = {"daSiamRPN":[]}
-		try:
-			# load net
-			self.net = SiamRPNvot()
-			self.net.load_state_dict(torch.load(join(realpath(dirname(__file__)),'DaSiamRPN','code','SiamRPNOTB.model')))
-			self.net.eval().cuda()
-			print('Finished loading net ...')
-		except Exception as e:
-			print(e)
-			print('No neural net model found ...')
-			print('reverting to default OpenCV tracker')
+		self.net = None
+		if TORCH_AVAILABLE:
+			try:
+				# load net
+				self.net = SiamRPNvot()
+				self.net.load_state_dict(torch.load(join(realpath(dirname(__file__)),'DaSiamRPN','code','SiamRPNOTB.model')))
+				self.net.eval().cuda()
+				print('Finished loading net ...')
+			except Exception as e:
+				print(f'Warning: Could not load neural net model: {e}')
+				print('reverting to default OpenCV tracker')
+				self.net = None
+		else:
+			print('Warning: PyTorch not available, daSiamRPN tracker disabled')
 
 		# Image Tracker type
 		self.tracker_type = Tracking.DEFAULT_TRACKER
@@ -142,13 +146,20 @@ class Tracker_Image(object):
 			self.tracker.init(image, bbox)
 		# Initialize Neural Net based Tracker
 		elif(self.tracker_type in self.NEURALNETTRACKERS.keys()):
-			# Initialize the tracker with this centroid position
-			print('Initializing with daSiamRPN tracker')
-			target_pos, target_sz = np.array([centroid[0], centroid[1]]), np.array([bbox[2], bbox[3]])
-			if(self.is_color==False):
-				image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
-			self.state = SiamRPN_init(image, target_pos, target_sz, self.net)
-			print('daSiamRPN tracker initialized')
+			if not TORCH_AVAILABLE or self.net is None:
+				print('Error: daSiamRPN tracker requires PyTorch but it is not available')
+				print('Falling back to default OpenCV tracker')
+				self.tracker_type = Tracking.DEFAULT_TRACKER
+				self.create_tracker()
+				self.tracker.init(image, bbox)
+			else:
+				# Initialize the tracker with this centroid position
+				print('Initializing with daSiamRPN tracker')
+				target_pos, target_sz = np.array([centroid[0], centroid[1]]), np.array([bbox[2], bbox[3]])
+				if(self.is_color==False):
+					image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+				self.state = SiamRPN_init(image, target_pos, target_sz, self.net)
+				print('daSiamRPN tracker initialized')
 		else:
 			pass
 
@@ -166,17 +177,27 @@ class Tracker_Image(object):
 			return ok, new_bbox
 		# tracking w/ the neural network-based tracker
 		elif(self.tracker_type in self.NEURALNETTRACKERS.keys()):
-			self.origin = np.array([0,0])
-			if(self.is_color==False):
-				image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
-			self.state = SiamRPN_track(self.state, image)
-			ok = True
-			if(ok):
-				# (x,y,w,h)
-				new_bbox = cxy_wh_2_rect(self.state['target_pos'], self.state['target_sz'])
-				new_bbox = [int(l) for l in new_bbox]
-				# print('Updated daSiamRPN tracker')
-			return ok, new_bbox
+			if not TORCH_AVAILABLE or self.net is None:
+				# Fallback to OpenCV tracker if torch not available
+				print('Warning: daSiamRPN tracker not available, falling back to OpenCV tracker')
+				self.tracker_type = Tracking.DEFAULT_TRACKER
+				self.create_tracker()
+				if(self.is_color==False):
+					image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+				ok, new_bbox = self.tracker.update(image)
+				return ok, new_bbox
+			else:
+				self.origin = np.array([0,0])
+				if(self.is_color==False):
+					image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+				self.state = SiamRPN_track(self.state, image)
+				ok = True
+				if(ok):
+					# (x,y,w,h)
+					new_bbox = cxy_wh_2_rect(self.state['target_pos'], self.state['target_sz'])
+					new_bbox = [int(l) for l in new_bbox]
+					# print('Updated daSiamRPN tracker')
+				return ok, new_bbox
 		# tracking w/ nearest neighbhour using the thresholded image 
 		else:
 			# If no tracker is specified, use basic thresholding and
