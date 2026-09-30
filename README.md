@@ -11,12 +11,12 @@ Squid (Simplifying Quantitive Imaging Development and Deployment) provides a ful
 
 Is based on the SQUID/OCTOPI 60x60mm inverted stage.
 <p align="left">
-<img src="./images/SiMoRa_1.jpeg" width="400">
+<img src="./images/SiMoRa_1.jpeg" height="500">
 </p>
 
 But currently we are using it in an upright configuration.
 <p align="left">
-<img src="./images/SiMoRa-raman-microscope V2.jpeg" width="400">
+<img src="./images/SiMoRa-raman-microscope V2.jpeg" height="500">
 </p>
 
 The CO2 incubator enclosure "IncuTEC" is documented in a [seperate repository](https://github.com/wenzel-lab/IncuTEC).
